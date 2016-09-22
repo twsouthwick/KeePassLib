@@ -11,7 +11,7 @@
     <RootNamespace>KeePass</RootNamespace>
     <AssemblyName>KeePass</AssemblyName>
     <ApplicationIcon>KeePass.ico</ApplicationIcon>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>KeePass.pfx</AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -1357,7 +1357,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <PropertyGroup>
-    <PostBuildEvent>"$(FrameworkSDKDir)bin\sgen.exe" /assembly:"$(TargetPath)" /force /nologo /compiler:/keycontainer:VS_KEY_27A70973F3FC3787 /compiler:/delaysign-</PostBuildEvent>
-  </PropertyGroup>
 </Project>
