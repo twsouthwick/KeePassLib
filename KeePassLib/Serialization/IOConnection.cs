@@ -39,7 +39,7 @@ using KeePassLib.Utility;
 
 namespace KeePassLib.Serialization
 {
-#if !KeePassLibSD
+#if !KeePassLibSD && !KeePassUAP
 	internal sealed class IOWebClient : WebClient
 	{
 		private IOConnectionInfo m_ioc;
@@ -208,13 +208,15 @@ namespace KeePassLib.Serialization
 		{
 			base.Close();
 #endif
+
+#if !KeePassUAP
 			if(MonoWorkarounds.IsRequired(10163) && m_bWrite)
 			{
 				try
 				{
 					Stream s = this.BaseStream;
 					Type t = s.GetType();
-					if(t.Name == "WebConnectionStream")
+                    if(t.Name == "WebConnectionStream")
 					{
 						PropertyInfo pi = t.GetProperty("Request",
 							BindingFlags.Instance | BindingFlags.NonPublic);
@@ -230,6 +232,7 @@ namespace KeePassLib.Serialization
 				}
 				catch(Exception) { Debug.Assert(false); }
 			}
+#endif
 		}
 
 		public static Stream WrapIfRequired(Stream s)

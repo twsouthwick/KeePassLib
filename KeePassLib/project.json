@@ -3,8 +3,8 @@
   "dependencies": {
     "ImageProcessorCore": "1.0.0-alpha1050",
     "NETStandard.Library": "1.6.0",
-    "System.Security.Cryptography.Algorithms": "4.2.0",
-    "System.Xml.XmlSerializer": "4.0.11"
+    "System.Xml.XmlSerializer": "4.0.11",
+    "Portable.BouncyCastle-Signed": "1.7.0.2"
   },
   "frameworks": {
     "netstandard1.5": {}

@@ -24,6 +24,8 @@ using System.IO;
 
 #if !KeePassUAP
 using System.Drawing;
+#else
+using ImageProcessorCore;
 #endif
 
 using KeePassLib.Collections;
@@ -71,9 +73,14 @@ namespace KeePassLib
 		private string m_strDefaultUserName = string.Empty;
 		private DateTime m_dtDefaultUserChanged = PwDefs.DtDefaultNow;
 		private uint m_uMntncHistoryDays = 365;
-		private Color m_clr = Color.Empty;
 
-		private DateTime m_dtKeyLastChanged = PwDefs.DtDefaultNow;
+#if !KeePassUAP
+        private Color m_clr = Color.Empty;
+#else
+        private Color m_clr = Color.White;
+#endif
+
+        private DateTime m_dtKeyLastChanged = PwDefs.DtDefaultNow;
 		private long m_lKeyChangeRecDays = -1;
 		private long m_lKeyChangeForceDays = -1;
 
@@ -501,9 +508,13 @@ namespace KeePassLib
 			m_strDefaultUserName = string.Empty;
 			m_dtDefaultUserChanged = dtNow;
 			m_uMntncHistoryDays = 365;
-			m_clr = Color.Empty;
+#if !KeePassUAP
+            m_clr = Color.Empty;
+#else
+            m_clr = Color.White;
+#endif
 
-			m_dtKeyLastChanged = dtNow;
+            m_dtKeyLastChanged = dtNow;
 			m_lKeyChangeRecDays = -1;
 			m_lKeyChangeForceDays = -1;
 
@@ -588,11 +599,12 @@ namespace KeePassLib
 				KdbxFile kdbx = new KdbxFile(this);
 				kdbx.DetachBinaries = m_strDetachBins;
 
-				Stream s = IOConnection.OpenRead(ioSource);
-				kdbx.Load(s, KdbxFormat.Default, slLogger);
-				s.Close();
+                using (Stream s = IOConnection.OpenRead(ioSource))
+                {
+                    kdbx.Load(s, KdbxFormat.Default, slLogger);
+                }
 
-				m_pbHashOfLastIO = kdbx.HashOfFileOnDisk;
+                m_pbHashOfLastIO = kdbx.HashOfFileOnDisk;
 				m_pbHashOfFileOnDisk = kdbx.HashOfFileOnDisk;
 				Debug.Assert(m_pbHashOfFileOnDisk != null);
 

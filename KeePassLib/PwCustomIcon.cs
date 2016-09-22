@@ -23,6 +23,8 @@ using System.Diagnostics;
 
 #if !KeePassUAP
 using System.Drawing;
+#else
+using ImageProcessorCore;
 #endif
 
 using KeePassLib.Utility;
