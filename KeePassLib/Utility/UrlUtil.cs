@@ -609,12 +609,12 @@ namespace KeePassLib.Utility
 
         public static string GetTempPath()
         {
-            string strDir;
-            if (NativeLib.IsUnix())
-                strDir = NativeMethods.GetUserRuntimeDir();
 #if KeePassUAP
-            else strDir = Windows.Storage.ApplicationData.Current.TemporaryFolder.Path;
+            string strDir = Path.GetTempPath();
 #else
+			string strDir;
+			if (NativeLib.IsUnix())
+				strDir = NativeMethods.GetUserRuntimeDir();
 			else strDir = Path.GetTempPath();
 #endif
 
