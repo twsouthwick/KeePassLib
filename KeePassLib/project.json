@@ -4,9 +4,10 @@
     "ImageProcessorCore": "1.0.0-alpha1050",
     "NETStandard.Library": "1.6.0",
     "System.Xml.XmlSerializer": "4.0.11",
-    "Portable.BouncyCastle-Signed": "1.7.0.2"
+    "System.Xml.XmlDocument": "4.0.1",
+    "System.Security.Cryptography.ProtectedData": "4.0.0"
   },
   "frameworks": {
-    "netstandard1.5": {}
+    "netstandard1.3": {}
   }
 }

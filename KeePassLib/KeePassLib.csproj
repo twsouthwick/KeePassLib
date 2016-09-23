@@ -65,7 +65,6 @@
     <Compile Include="Cryptography\PasswordGenerator\PwProfile.cs" />
     <Compile Include="Cryptography\PopularPasswords.cs" />
     <Compile Include="Cryptography\QualityEstimation.cs" />
-    <Compile Include="Cryptography\SelfTest.cs" />
     <Compile Include="Interfaces\IStructureItem.cs" />
     <Compile Include="Interfaces\IUIOperations.cs" />
     <Compile Include="Interfaces\IXmlSerializerEx.cs" />
@@ -128,7 +127,6 @@
     <Compile Include="Utility\AppLogEx.cs" />
     <Compile Include="Utility\GfxUtil.cs" />
     <Compile Include="Utility\MemUtil.cs" />
-    <Compile Include="Utility\MessageService.cs" />
     <Compile Include="Native\NativeLib.cs" />
     <Compile Include="Cryptography\PasswordGenerator\PwGenerator.cs" />
     <Compile Include="Utility\MonoWorkarounds.cs" />
