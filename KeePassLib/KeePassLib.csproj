@@ -78,6 +78,7 @@
     <Compile Include="Native\NativeMethods.cs" />
     <Compile Include="Native\NativeMethods.Unix.cs" />
     <Compile Include="Portability\CryptographyExtensions.cs" />
+    <Compile Include="Portability\EnvironmentExt.cs" />
     <Compile Include="Portability\MessageService.cs" />
     <Compile Include="Portability\XmlExtensions.cs" />
     <Compile Include="PwCustomIcon.cs" />
