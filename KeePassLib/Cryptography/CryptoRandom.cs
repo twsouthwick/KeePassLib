@@ -20,15 +20,13 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Cryptography;
+using KeePassLib.Utility;
 
 #if !KeePassUAP
 using System.Drawing;
-using System.Security.Cryptography;
 using System.Windows.Forms;
 #endif
-
-using KeePassLib.Native;
-using KeePassLib.Utility;
 
 namespace KeePassLib.Cryptography
 {
@@ -41,7 +39,13 @@ namespace KeePassLib.Cryptography
     {
         private byte[] m_pbEntropyPool = new byte[64];
         private uint m_uCounter;
+
+#if !KeePassUAP
         private RNGCryptoServiceProvider m_rng = new RNGCryptoServiceProvider();
+#else
+        private RandomNumberGenerator m_rng = RandomNumberGenerator.Create();
+#endif
+
         private ulong m_uGeneratedBytesCount = 0;
 
         private static object g_oSyncRoot = new object();
@@ -111,12 +115,7 @@ namespace KeePassLib.Cryptography
             byte[] pbNewData = pbEntropy;
             if (pbEntropy.Length >= 64)
             {
-#if KeePassLibSD
-				SHA256Managed shaNew = new SHA256Managed();
-#else
-                SHA512Managed shaNew = new SHA512Managed();
-#endif
-                pbNewData = shaNew.ComputeHash(pbEntropy);
+                pbNewData = Crypto.SHA512.ComputeHash(pbEntropy);
             }
 
             MemoryStream ms = new MemoryStream();
@@ -126,13 +125,12 @@ namespace KeePassLib.Cryptography
                 ms.Write(pbNewData, 0, pbNewData.Length);
 
                 byte[] pbFinal = ms.ToArray();
-#if KeePassLibSD
-				SHA256Managed shaPool = new SHA256Managed();
-#else
+
+#if !KeePassLibSD
                 Debug.Assert(pbFinal.Length == (64 + pbNewData.Length));
-                SHA512Managed shaPool = new SHA512Managed();
 #endif
-                m_pbEntropyPool = shaPool.ComputeHash(pbFinal);
+
+                m_pbEntropyPool = Crypto.SHA512.ComputeHash(pbFinal);
             }
             ms.Close();
         }
@@ -148,7 +146,7 @@ namespace KeePassLib.Cryptography
             pb = TimeUtil.PackTime(DateTime.Now);
             ms.Write(pb, 0, pb.Length);
 
-#if !KeePassLibSD
+#if !KeePassLibSD && !KeePassUAP
             // In try-catch for systems without GUI;
             // https://sourceforge.net/p/keepass/discussion/329221/thread/20335b73/
             try
@@ -165,23 +163,21 @@ namespace KeePassLib.Cryptography
             pb = MemUtil.UInt32ToBytes((uint)rWeak.Next());
             ms.Write(pb, 0, pb.Length);
 
+#if !KeePassUAP
             pb = MemUtil.UInt32ToBytes((uint)NativeLib.GetPlatformID());
             ms.Write(pb, 0, pb.Length);
+#endif
 
             try
             {
                 pb = MemUtil.UInt32ToBytes((uint)Environment.ProcessorCount);
                 ms.Write(pb, 0, pb.Length);
 
-#if KeePassUAP
+#if !KeePassUAP
                 Version v = EnvironmentExt.OSVersion.Version;
-#else
-				Version v = Environment.OSVersion.Version;
-#endif
                 pb = MemUtil.UInt32ToBytes((uint)v.GetHashCode());
                 ms.Write(pb, 0, pb.Length);
 
-#if !KeePassUAP
 				pb = MemUtil.UInt64ToBytes((ulong)Environment.WorkingSet);
 				ms.Write(pb, 0, pb.Length);
 #endif
@@ -189,10 +185,12 @@ namespace KeePassLib.Cryptography
             catch (Exception) { Debug.Assert(false); }
 
 #if KeePassUAP
+#if FALSE
             pb = DiagnosticsExt.GetProcessEntropy();
             ms.Write(pb, 0, pb.Length);
+#endif
 #elif !KeePassLibSD
-			Process p = null;
+            Process p = null;
 			try
 			{
 				p = Process.GetCurrentProcess();
@@ -276,8 +274,7 @@ namespace KeePassLib.Cryptography
                 m_uGeneratedBytesCount += 32;
             }
 
-            SHA256Managed sha256 = new SHA256Managed();
-            return sha256.ComputeHash(pbFinal);
+            return Crypto.SHA256.ComputeHash(pbFinal);
         }
 
         /// <summary>

@@ -17,16 +17,10 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-using System;
-using System.Diagnostics;
-using System.Text;
-
-#if !KeePassUAP
-using System.Security.Cryptography;
-#endif
-
 using KeePassLib.Security;
 using KeePassLib.Utility;
+using System;
+using System.Diagnostics;
 
 namespace KeePassLib.Keys
 {
@@ -71,12 +65,11 @@ namespace KeePassLib.Keys
             Debug.Assert(pbPasswordUtf8 != null);
             if (pbPasswordUtf8 == null) throw new ArgumentNullException("pbPasswordUtf8");
 
-#if (DEBUG && !KeePassLibSD)
-            Debug.Assert(ValidatePassword(pbPasswordUtf8));
+#if (DEBUG && !KeePassLibSD && !KeePassUAP)
+			Debug.Assert(ValidatePassword(pbPasswordUtf8));
 #endif
 
-            SHA256Managed sha256 = new SHA256Managed();
-            byte[] pbRaw = sha256.ComputeHash(pbPasswordUtf8);
+            byte[] pbRaw = Crypto.SHA256.ComputeHash(pbPasswordUtf8);
 
             m_psPassword = new ProtectedString(true, pbPasswordUtf8);
             m_pbKeyData = new ProtectedBinary(true, pbRaw);
@@ -88,18 +81,18 @@ namespace KeePassLib.Keys
         //	m_pbKeyData = null;
         // }
 
-#if (DEBUG && !KeePassLibSD)
-        private static bool ValidatePassword(byte[] pb)
-        {
-            try
-            {
-                string str = StrUtil.Utf8.GetString(pb);
+#if (DEBUG && !KeePassLibSD && !KeePassUAP)
+		private static bool ValidatePassword(byte[] pb)
+		{
+			try
+			{
+				string str = StrUtil.Utf8.GetString(pb);
                 return str.IsNormalized(NormalizationForm.FormC);
             }
-            catch (Exception) { Debug.Assert(false); }
+			catch(Exception) { Debug.Assert(false); }
 
-            return false;
-        }
+			return false;
+		}
 #endif
     }
 }

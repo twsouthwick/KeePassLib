@@ -17,14 +17,9 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+using KeePassLib.Cryptography.Cipher;
 using System;
 using System.Diagnostics;
-
-#if !KeePassUAP
-using System.Security.Cryptography;
-#endif
-
-using KeePassLib.Cryptography.Cipher;
 
 namespace KeePassLib.Cryptography
 {
@@ -114,8 +109,7 @@ namespace KeePassLib.Cryptography
             }
             else if (genAlgorithm == CrsAlgorithm.Salsa20)
             {
-                SHA256Managed sha256 = new SHA256Managed();
-                byte[] pbKey32 = sha256.ComputeHash(pbKey);
+                byte[] pbKey32 = Crypto.SHA256.ComputeHash(pbKey);
                 byte[] pbIV = new byte[8] { 0xE8, 0x30, 0x09, 0x4B,
                     0x97, 0x20, 0x5D, 0x2A }; // Unique constant
 

@@ -17,17 +17,11 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+using KeePassLib.Utility;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
-
-#if !KeePassUAP
 using System.Security.Cryptography;
-#endif
-
-using KeePassLib.Utility;
 
 namespace KeePassLib.Cryptography
 {
@@ -35,7 +29,12 @@ namespace KeePassLib.Cryptography
     {
         private Stream m_sBaseStream;
         private bool m_bWriting;
+
+#if !KeePassUAP
         private HashAlgorithm m_hash;
+#else
+        private IncrementalHash m_hash;
+#endif
 
         private byte[] m_pbFinalHash = null;
 
@@ -70,17 +69,19 @@ namespace KeePassLib.Cryptography
             set { throw new NotSupportedException(); }
         }
 
-        public HashingStreamEx(Stream sBaseStream, bool bWriting, HashAlgorithm hashAlgorithm)
+        public HashingStreamEx(Stream sBaseStream, bool bWriting)
         {
             if (sBaseStream == null) throw new ArgumentNullException("sBaseStream");
 
             m_sBaseStream = sBaseStream;
             m_bWriting = bWriting;
 
-#if !KeePassLibSD
-            m_hash = (hashAlgorithm ?? new SHA256Managed());
+#if !KeePassLibSD && !KeePassUAP
+			m_hash = (hashAlgorithm ?? new SHA256Managed());
+#elif KeePassUAP
+            m_hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 #else // KeePassLibSD
-			m_hash = null;
+            m_hash = null;
 
 			try { m_hash = HashAlgorithm.Create("SHA256"); }
 			catch(Exception) { }
@@ -89,12 +90,14 @@ namespace KeePassLib.Cryptography
 #endif
             if (m_hash == null) { Debug.Assert(false); return; }
 
+#if !KeePassUAP
             // Validate hash algorithm
-            if (!m_hash.CanReuseTransform || !m_hash.CanTransformMultipleBlocks)
-            {
-                Debug.Assert(false);
-                m_hash = null;
-            }
+            if(!m_hash.CanReuseTransform || !m_hash.CanTransformMultipleBlocks)
+			{
+				Debug.Assert(false);
+				m_hash = null;
+			}
+#endif
         }
 
         public override void Flush()
@@ -114,9 +117,12 @@ namespace KeePassLib.Cryptography
             {
                 try
                 {
+#if !KeePassUAP
                     m_hash.TransformFinalBlock(new byte[0], 0, 0);
-
                     m_pbFinalHash = m_hash.Hash;
+#else
+                    m_pbFinalHash = m_hash.GetHashAndReset();
+#endif
                 }
                 catch (Exception) { Debug.Assert(false); }
 
@@ -155,7 +161,11 @@ namespace KeePassLib.Cryptography
 #endif
 
             if ((m_hash != null) && (nRead > 0))
+#if !KeePassUAP
                 m_hash.TransformBlock(pbBuffer, nOffset, nRead, pbBuffer, nOffset);
+#else
+                m_hash.AppendData(pbBuffer, nOffset, nRead);
+#endif
 
 #if DEBUG
             Debug.Assert(MemUtil.ArraysEqual(pbBuffer, pbOrg));
@@ -174,7 +184,11 @@ namespace KeePassLib.Cryptography
 #endif
 
             if ((m_hash != null) && (nCount > 0))
+#if !KeePassUAP
                 m_hash.TransformBlock(pbBuffer, nOffset, nCount, pbBuffer, nOffset);
+#else
+                m_hash.AppendData(pbBuffer, nOffset, nCount);
+#endif
 
 #if DEBUG
             Debug.Assert(MemUtil.ArraysEqual(pbBuffer, pbOrg));

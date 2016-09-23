@@ -17,18 +17,12 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+using KeePassLib.Resources;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 using System.IO;
 using System.Security;
-using System.Diagnostics;
-
-#if !KeePassUAP
 using System.Security.Cryptography;
-#endif
-
-using KeePassLib.Resources;
 
 namespace KeePassLib.Cryptography.Cipher
 {
@@ -37,10 +31,8 @@ namespace KeePassLib.Cryptography.Cipher
     /// </summary>
     public sealed class StandardAesEngine : ICipherEngine
     {
-#if !KeePassUAP
 		private const CipherMode m_rCipherMode = CipherMode.CBC;
 		private const PaddingMode m_rCipherPadding = PaddingMode.PKCS7;
-#endif
 
         private static PwUuid m_uuidAes = null;
 
@@ -109,7 +101,12 @@ namespace KeePassLib.Cryptography.Cipher
             Array.Copy(pbKey, pbLocalKey, 32);
 
 #if KeePassUAP
-            return StandardAesEngineExt.CreateStream(s, bEncrypt, pbLocalKey, pbLocalIV);
+            Aes r = Aes.Create();
+            r.IV = pbLocalIV;
+            r.KeySize = 256;
+            r.Key = pbLocalKey;
+            r.Mode = m_rCipherMode;
+            r.Padding = m_rCipherPadding;
 #else
 			RijndaelManaged r = new RijndaelManaged();
 			if(r.BlockSize != 128) // AES block size
@@ -123,14 +120,14 @@ namespace KeePassLib.Cryptography.Cipher
 			r.Key = pbLocalKey;
 			r.Mode = m_rCipherMode;
 			r.Padding = m_rCipherPadding;
-
-			ICryptoTransform iTransform = (bEncrypt ? r.CreateEncryptor() : r.CreateDecryptor());
-			Debug.Assert(iTransform != null);
-			if(iTransform == null) throw new SecurityException("Unable to create Rijndael transform!");
-
-			return new CryptoStream(s, iTransform, bEncrypt ? CryptoStreamMode.Write :
-				CryptoStreamMode.Read);
 #endif
+
+            ICryptoTransform iTransform = (bEncrypt ? r.CreateEncryptor() : r.CreateDecryptor());
+            Debug.Assert(iTransform != null);
+            if(iTransform == null) throw new SecurityException("Unable to create Rijndael transform!");
+
+            return new CryptoStream(s, iTransform, bEncrypt ? CryptoStreamMode.Write :
+                CryptoStreamMode.Read);
         }
 
         public Stream EncryptStream(Stream sPlainText, byte[] pbKey, byte[] pbIV)

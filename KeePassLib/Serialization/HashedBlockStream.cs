@@ -21,11 +21,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-
-#if !KeePassUAP
 using System.Security.Cryptography;
-#endif
-
 using KeePassLib.Native;
 using KeePassLib.Utility;
 
@@ -217,12 +213,19 @@ namespace KeePassLib.Serialization
             if ((pbStoredHash == null) || (pbStoredHash.Length != 32))
                 throw new InvalidDataException();
 
+#if KeePassUAP
+            int nBufferSize = m_brInput.ReadInt32();
+#else
             int nBufferSize = 0;
-            try { nBufferSize = m_brInput.ReadInt32(); }
+            try
+            {
+                nBufferSize = m_brInput.ReadInt32();
+            }
             catch (NullReferenceException) // Mono bug workaround (LaunchPad 783268)
             {
                 if (!NativeLib.IsUnix()) throw;
             }
+#endif
 
             if (nBufferSize < 0)
                 throw new InvalidDataException();
@@ -246,8 +249,7 @@ namespace KeePassLib.Serialization
 
             if (m_bVerify)
             {
-                SHA256Managed sha256 = new SHA256Managed();
-                byte[] pbComputedHash = sha256.ComputeHash(m_pbBuffer);
+                byte[] pbComputedHash = Crypto.SHA256.ComputeHash(m_pbBuffer);
                 if ((pbComputedHash == null) || (pbComputedHash.Length != 32))
                     throw new InvalidOperationException();
 
@@ -288,20 +290,18 @@ namespace KeePassLib.Serialization
 
             if (m_nBufferPos > 0)
             {
-                SHA256Managed sha256 = new SHA256Managed();
-
 #if !KeePassLibSD
-                byte[] pbHash = sha256.ComputeHash(m_pbBuffer, 0, m_nBufferPos);
+                byte[] pbHash = Crypto.SHA256.ComputeHash(m_pbBuffer, 0, m_nBufferPos);
 #else
-				byte[] pbHash;
-				if(m_nBufferPos == m_pbBuffer.Length)
-					pbHash = sha256.ComputeHash(m_pbBuffer);
-				else
-				{
-					byte[] pbData = new byte[m_nBufferPos];
-					Array.Copy(m_pbBuffer, 0, pbData, 0, m_nBufferPos);
-					pbHash = sha256.ComputeHash(pbData);
-				}
+                byte[] pbHash;
+                if(m_nBufferPos == m_pbBuffer.Length)
+                    pbHash = Crypto.SHA256.ComputeHash(m_pbBuffer);
+                else
+                {
+                    byte[] pbData = new byte[m_nBufferPos];
+                    Array.Copy(m_pbBuffer, 0, pbData, 0, m_nBufferPos);
+                    pbHash = Crypto.SHA256.ComputeHash(pbData);
+                }
 #endif
 
                 m_bwOutput.Write(pbHash);

@@ -57,8 +57,7 @@ namespace KeePassLib.Keys
 
             if (bPerformHash)
             {
-                SHA256Managed sha256 = new SHA256Managed();
-                byte[] pbRaw = sha256.ComputeHash(pbKeyData);
+                byte[] pbRaw = Crypto.SHA256.ComputeHash(pbKeyData);
                 m_pbKey = new ProtectedBinary(true, pbRaw);
             }
             else m_pbKey = new ProtectedBinary(true, pbKeyData);

@@ -23,11 +23,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Security;
 using System.Text;
-using System.Xml;
-
-#if !KeePassUAP
 using System.Security.Cryptography;
-#endif
 
 #if !KeePassLibSD
 using System.IO.Compression;
@@ -76,7 +72,7 @@ namespace KeePassLib.Serialization
             m_format = kdbFormat;
             m_slLogger = slLogger;
 
-            HashingStreamEx hashedStream = new HashingStreamEx(sSource, false, null);
+            HashingStreamEx hashedStream = new HashingStreamEx(sSource, false);
 
             UTF8Encoding encNoBom = StrUtil.Utf8;
             try
@@ -223,8 +219,8 @@ namespace KeePassLib.Serialization
             br.CopyDataTo = null;
             byte[] pbHeader = msHeader.ToArray();
             msHeader.Close();
-            SHA256Managed sha256 = new SHA256Managed();
-            m_pbHashOfHeader = sha256.ComputeHash(pbHeader);
+
+            m_pbHashOfHeader = Crypto.SHA256.ComputeHash(pbHeader);
         }
 
         private bool ReadHeaderField(BinaryReaderEx brSource)
@@ -345,8 +341,7 @@ namespace KeePassLib.Serialization
                 throw new SecurityException(KLRes.InvalidCompositeKey);
             ms.Write(pKey32, 0, 32);
 
-            SHA256Managed sha256 = new SHA256Managed();
-            byte[] aesKey = sha256.ComputeHash(ms.ToArray());
+            byte[] aesKey = Crypto.SHA256.ComputeHash(ms.ToArray());
 
             ms.Close();
             Array.Clear(pKey32, 0, 32);

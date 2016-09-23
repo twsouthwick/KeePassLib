@@ -28,7 +28,6 @@ using System.Xml;
 
 #if !KeePassUAP
 using System.Drawing;
-using System.Security.Cryptography;
 #endif
 
 #if KeePassLibSD
@@ -83,7 +82,7 @@ namespace KeePassLib.Serialization
             m_format = format;
             m_slLogger = slLogger;
 
-            HashingStreamEx hashedStream = new HashingStreamEx(sSaveTo, true, null);
+            HashingStreamEx hashedStream = new HashingStreamEx(sSaveTo, true);
 
             UTF8Encoding encNoBom = StrUtil.Utf8;
             CryptoRandom cr = CryptoRandom.Instance;
@@ -194,8 +193,7 @@ namespace KeePassLib.Serialization
             byte[] pbHeader = ms.ToArray();
             ms.Close();
 
-            SHA256Managed sha256 = new SHA256Managed();
-            m_pbHashOfHeader = sha256.ComputeHash(pbHeader);
+            m_pbHashOfHeader = Crypto.SHA256.ComputeHash(pbHeader);
 
             s.Write(pbHeader, 0, pbHeader.Length);
             s.Flush();
@@ -236,8 +234,7 @@ namespace KeePassLib.Serialization
                 throw new SecurityException(KLRes.InvalidCompositeKey);
             ms.Write(pKey32, 0, 32);
 
-            SHA256Managed sha256 = new SHA256Managed();
-            byte[] aesKey = sha256.ComputeHash(ms.ToArray());
+            byte[] aesKey = Crypto.SHA256.ComputeHash(ms.ToArray());
 
             ms.Close();
             Array.Clear(pKey32, 0, 32);

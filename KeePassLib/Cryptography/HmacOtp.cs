@@ -17,16 +17,10 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
-
-#if !KeePassUAP
-using System.Security.Cryptography;
-#endif
-
 using KeePassLib.Utility;
+using System;
+using System.Globalization;
+using System.Security.Cryptography;
 
 #if !KeePassLibSD
 namespace KeePassLib.Cryptography

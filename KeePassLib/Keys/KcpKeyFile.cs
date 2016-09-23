@@ -134,8 +134,7 @@ namespace KeePassLib.Keys
 
             if (pbKey == null)
             {
-                SHA256Managed sha256 = new SHA256Managed();
-                pbKey = sha256.ComputeHash(pbFileData);
+                pbKey = Crypto.SHA256.ComputeHash(pbFileData);
             }
 
             return pbKey;
@@ -193,8 +192,7 @@ namespace KeePassLib.Keys
                 ms.Write(pbAdditionalEntropy, 0, pbAdditionalEntropy.Length);
                 ms.Write(pbKey32, 0, 32);
 
-                SHA256Managed sha256 = new SHA256Managed();
-                pbFinalKey32 = sha256.ComputeHash(ms.ToArray());
+                pbFinalKey32 = Crypto.SHA256.ComputeHash(ms.ToArray());
                 ms.Close();
             }
 
