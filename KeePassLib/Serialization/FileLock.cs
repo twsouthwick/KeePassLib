@@ -241,7 +241,14 @@ namespace KeePassLib.Serialization
 
                 if (bFileDeleted) break;
 
-                if (bDisposing) Thread.Sleep(50);
+                if (bDisposing)
+                {
+#if FEATURE_THREAD_SLEEP
+                    Thread.Sleep(50);
+#else
+                    System.Threading.Tasks.Task.Delay(50).ConfigureAwait(false).GetAwaiter().GetResult();
+#endif
+                }
             }
 
             // if(bDisposing && !bFileDeleted)
