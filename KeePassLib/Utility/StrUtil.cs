@@ -815,8 +815,10 @@ namespace KeePassLib.Utility
             Debug.Assert(strY != null);
             if (strY == null) throw new ArgumentNullException("strY");
 
+#if FEATURE_NATIVEMETHODS
             if (NativeMethods.SupportsStrCmpNaturally)
                 return NativeMethods.StrCmpNaturally(strX, strY);
+#endif
 
             int cX = strX.Length;
             int cY = strY.Length;
