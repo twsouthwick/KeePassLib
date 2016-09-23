@@ -157,7 +157,12 @@ namespace KeePassLib.Serialization
 						bkSecurity = File.GetAccessControl(m_iocBase.Path);
 #endif
                     }
-                    catch (Exception) { Debug.Assert(NativeLib.IsUnix()); }
+                    catch (Exception)
+                    {
+#if FETURE_NATIVELIB
+                        Debug.Assert(NativeLib.IsUnix());
+#endif
+                    }
                 }
 #endif
 

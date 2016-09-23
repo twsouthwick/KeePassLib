@@ -30,7 +30,9 @@ using Org.BouncyCastle.Crypto.Parameters;
 using System.Security.Cryptography;
 #endif
 
+#if FEATURE_NATIVELIBS
 using KeePassLib.Native;
+#endif
 using KeePassLib.Resources;
 using KeePassLib.Security;
 using KeePassLib.Utility;
@@ -289,10 +291,11 @@ namespace KeePassLib.Keys
 
             try
             {
+#if FEATURE_NATIVELIB
                 // Try to use the native library first
                 if (NativeLib.TransformKey256(pbNewKey, pbKeySeed32, uNumRounds))
                     return (new SHA256Managed()).ComputeHash(pbNewKey);
-
+#endif
                 if (!TransformKeyManaged(pbNewKey, pbKeySeed32, uNumRounds))
                     return null;
 
@@ -367,9 +370,11 @@ namespace KeePassLib.Keys
         {
             ulong uRounds;
 
+#if FEATURE_NATIVELIBS
             // Try native method
             if (NativeLib.TransformKeyBenchmark256(uMilliseconds, out uRounds))
                 return uRounds;
+#endif
 
             byte[] pbKey = new byte[32];
             byte[] pbNewKey = new byte[32];

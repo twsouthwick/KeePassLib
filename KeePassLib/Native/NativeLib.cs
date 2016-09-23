@@ -17,6 +17,7 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#if !KeePassUAP
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,12 +25,9 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
-
-#if !KeePassUAP
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-#endif
 
 using KeePassLib.Utility;
 
@@ -450,3 +448,4 @@ namespace KeePassLib.Native
         }
     }
 }
+#endif
