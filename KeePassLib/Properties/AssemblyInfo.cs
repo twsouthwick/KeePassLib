@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dominik Reichl")]
 [assembly: AssemblyProduct("KeePassLib")]
-[assembly: AssemblyCopyright("Copyright © 2003-2016 Dominik Reichl")]
+[assembly: AssemblyCopyright("Copyright \u00A9 2003-2016 Dominik Reichl")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

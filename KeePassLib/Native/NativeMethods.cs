@@ -27,14 +27,14 @@ using KeePassLib.Utility;
 
 namespace KeePassLib.Native
 {
-	internal static partial class NativeMethods
-	{
-		internal const int MAX_PATH = 260;
+    internal static partial class NativeMethods
+    {
+        internal const int MAX_PATH = 260;
 
-		// internal const uint TF_SFT_SHOWNORMAL = 0x00000001;
-		// internal const uint TF_SFT_HIDDEN = 0x00000008;
+        // internal const uint TF_SFT_SHOWNORMAL = 0x00000001;
+        // internal const uint TF_SFT_HIDDEN = 0x00000008;
 
-		/* [DllImport("KeePassNtv32.dll", EntryPoint = "TransformKey")]
+        /* [DllImport("KeePassNtv32.dll", EntryPoint = "TransformKey")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool TransformKey32(IntPtr pBuf256,
 			IntPtr pKey256, UInt64 uRounds);
@@ -106,7 +106,7 @@ namespace KeePassLib.Native
 		}
 #endif
 
-		/* [DllImport("KeePassLibC32.dll", EntryPoint = "TF_ShowLangBar")]
+        /* [DllImport("KeePassLibC32.dll", EntryPoint = "TF_ShowLangBar")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool TF_ShowLangBar32(UInt32 dwFlags);
 
@@ -143,23 +143,23 @@ namespace KeePassLib.Native
 		}
 #endif
 
-		internal static bool SupportsStrCmpNaturally
-		{
-			get
-			{
+        internal static bool SupportsStrCmpNaturally
+        {
+            get
+            {
 #if (!KeePassLibSD && !KeePassUAP)
 				if(!m_obSupportsLogicalCmp.HasValue)
 					TestNaturalComparisonsSupport();
 
 				return m_obSupportsLogicalCmp.Value;
 #else
-				return false;
+                return false;
 #endif
-			}
-		}
+            }
+        }
 
-		internal static int StrCmpNaturally(string x, string y)
-		{
+        internal static int StrCmpNaturally(string x, string y)
+        {
 #if (!KeePassLibSD && !KeePassUAP)
 			if(!NativeMethods.SupportsStrCmpNaturally)
 			{
@@ -169,18 +169,18 @@ namespace KeePassLib.Native
 
 			return StrCmpLogicalW(x, y);
 #else
-			Debug.Assert(false);
-			return string.Compare(x, y, true);
+            Debug.Assert(false);
+            return string.Compare(x, y, true);
 #endif
-		}
+        }
 
-		internal static string GetUserRuntimeDir()
-		{
+        internal static string GetUserRuntimeDir()
+        {
 #if KeePassLibSD
 			return Path.GetTempPath();
 #else
 #if KeePassUAP
-			string strRtDir = EnvironmentExt.AppDataLocalFolderPath;
+            string strRtDir = EnvironmentExt.AppDataLocalFolderPath;
 #else
 			string strRtDir = Environment.GetEnvironmentVariable("XDG_RUNTIME_DIR");
 			if(string.IsNullOrEmpty(strRtDir))
@@ -192,11 +192,11 @@ namespace KeePassLib.Native
 			}
 #endif
 
-			strRtDir = UrlUtil.EnsureTerminatingSeparator(strRtDir, false);
-			strRtDir += PwDefs.ShortProductName;
+            strRtDir = UrlUtil.EnsureTerminatingSeparator(strRtDir, false);
+            strRtDir += PwDefs.ShortProductName;
 
-			return strRtDir;
+            return strRtDir;
 #endif
-		}
-	}
+        }
+    }
 }

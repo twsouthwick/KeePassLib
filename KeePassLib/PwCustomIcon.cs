@@ -31,76 +31,76 @@ using KeePassLib.Utility;
 
 namespace KeePassLib
 {
-	/// <summary>
-	/// Custom icon. <c>PwCustomIcon</c> objects are immutable.
-	/// </summary>
-	public sealed class PwCustomIcon
-	{
-		private PwUuid m_pwUuid;
-		private byte[] m_pbImageDataPng;
+    /// <summary>
+    /// Custom icon. <c>PwCustomIcon</c> objects are immutable.
+    /// </summary>
+    public sealed class PwCustomIcon
+    {
+        private PwUuid m_pwUuid;
+        private byte[] m_pbImageDataPng;
 
-		private Image m_imgOrg = null;
-		private Dictionary<long, Image> m_dImageCache = new Dictionary<long, Image>();
+        private Image m_imgOrg = null;
+        private Dictionary<long, Image> m_dImageCache = new Dictionary<long, Image>();
 
-		// Recommended maximum sizes, not obligatory
-		internal const int MaxWidth = 128;
-		internal const int MaxHeight = 128;
+        // Recommended maximum sizes, not obligatory
+        internal const int MaxWidth = 128;
+        internal const int MaxHeight = 128;
 
-		public PwUuid Uuid
-		{
-			get { return m_pwUuid; }
-		}
+        public PwUuid Uuid
+        {
+            get { return m_pwUuid; }
+        }
 
-		public byte[] ImageDataPng
-		{
-			get { return m_pbImageDataPng; }
-		}
+        public byte[] ImageDataPng
+        {
+            get { return m_pbImageDataPng; }
+        }
 
-		[Obsolete("Use GetImage instead.")]
-		public Image Image
-		{
+        [Obsolete("Use GetImage instead.")]
+        public Image Image
+        {
 #if (!KeePassLibSD && !KeePassUAP)
 			get { return GetImage(16, 16); } // Backward compatibility
 #else
-			get { return GetImage(); } // Backward compatibility
+            get { return GetImage(); } // Backward compatibility
 #endif
-		}
+        }
 
-		public PwCustomIcon(PwUuid pwUuid, byte[] pbImageDataPng)
-		{
-			Debug.Assert(pwUuid != null);
-			if(pwUuid == null) throw new ArgumentNullException("pwUuid");
-			Debug.Assert(!pwUuid.Equals(PwUuid.Zero));
-			if(pwUuid.Equals(PwUuid.Zero)) throw new ArgumentException("pwUuid == 0.");
-			Debug.Assert(pbImageDataPng != null);
-			if(pbImageDataPng == null) throw new ArgumentNullException("pbImageDataPng");
+        public PwCustomIcon(PwUuid pwUuid, byte[] pbImageDataPng)
+        {
+            Debug.Assert(pwUuid != null);
+            if (pwUuid == null) throw new ArgumentNullException("pwUuid");
+            Debug.Assert(!pwUuid.Equals(PwUuid.Zero));
+            if (pwUuid.Equals(PwUuid.Zero)) throw new ArgumentException("pwUuid == 0.");
+            Debug.Assert(pbImageDataPng != null);
+            if (pbImageDataPng == null) throw new ArgumentNullException("pbImageDataPng");
 
-			m_pwUuid = pwUuid;
-			m_pbImageDataPng = pbImageDataPng;
+            m_pwUuid = pwUuid;
+            m_pbImageDataPng = pbImageDataPng;
 
-			// MemoryStream ms = new MemoryStream(m_pbImageDataPng, false);
-			// m_imgOrg = Image.FromStream(ms);
-			// ms.Close();
-			try { m_imgOrg = GfxUtil.LoadImage(m_pbImageDataPng); }
-			catch(Exception) { Debug.Assert(false); }
+            // MemoryStream ms = new MemoryStream(m_pbImageDataPng, false);
+            // m_imgOrg = Image.FromStream(ms);
+            // ms.Close();
+            try { m_imgOrg = GfxUtil.LoadImage(m_pbImageDataPng); }
+            catch (Exception) { Debug.Assert(false); }
 
-			if(m_imgOrg != null)
-				m_dImageCache[GetID(m_imgOrg.Width, m_imgOrg.Height)] =
-					m_imgOrg;
-		}
+            if (m_imgOrg != null)
+                m_dImageCache[GetID(m_imgOrg.Width, m_imgOrg.Height)] =
+                    m_imgOrg;
+        }
 
-		private static long GetID(int w, int h)
-		{
-			return (((long)w << 32) ^ (long)h);
-		}
+        private static long GetID(int w, int h)
+        {
+            return (((long)w << 32) ^ (long)h);
+        }
 
-		/// <summary>
-		/// Get the icon as an <c>Image</c> (original size).
-		/// </summary>
-		public Image GetImage()
-		{
-			return m_imgOrg;
-		}
+        /// <summary>
+        /// Get the icon as an <c>Image</c> (original size).
+        /// </summary>
+        public Image GetImage()
+        {
+            return m_imgOrg;
+        }
 
 #if (!KeePassLibSD && !KeePassUAP)
 		/// <summary>
@@ -124,5 +124,5 @@ namespace KeePassLib
 			return img;
 		}
 #endif
-	}
+    }
 }

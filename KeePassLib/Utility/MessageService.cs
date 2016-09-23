@@ -32,136 +32,136 @@ using KeePassLib.Serialization;
 
 namespace KeePassLib.Utility
 {
-	public sealed class MessageServiceEventArgs : EventArgs
-	{
-		private string m_strTitle = string.Empty;
-		private string m_strText = string.Empty;
-		private MessageBoxButtons m_msgButtons = MessageBoxButtons.OK;
-		private MessageBoxIcon m_msgIcon = MessageBoxIcon.None;
+    public sealed class MessageServiceEventArgs : EventArgs
+    {
+        private string m_strTitle = string.Empty;
+        private string m_strText = string.Empty;
+        private MessageBoxButtons m_msgButtons = MessageBoxButtons.OK;
+        private MessageBoxIcon m_msgIcon = MessageBoxIcon.None;
 
-		public string Title { get { return m_strTitle; } }
-		public string Text { get { return m_strText; } }
-		public MessageBoxButtons Buttons { get { return m_msgButtons; } }
-		public MessageBoxIcon Icon { get { return m_msgIcon; } }
+        public string Title { get { return m_strTitle; } }
+        public string Text { get { return m_strText; } }
+        public MessageBoxButtons Buttons { get { return m_msgButtons; } }
+        public MessageBoxIcon Icon { get { return m_msgIcon; } }
 
-		public MessageServiceEventArgs() { }
+        public MessageServiceEventArgs() { }
 
-		public MessageServiceEventArgs(string strTitle, string strText,
-			MessageBoxButtons msgButtons, MessageBoxIcon msgIcon)
-		{
-			m_strTitle = (strTitle ?? string.Empty);
-			m_strText = (strText ?? string.Empty);
-			m_msgButtons = msgButtons;
-			m_msgIcon = msgIcon;
-		}
-	}
+        public MessageServiceEventArgs(string strTitle, string strText,
+            MessageBoxButtons msgButtons, MessageBoxIcon msgIcon)
+        {
+            m_strTitle = (strTitle ?? string.Empty);
+            m_strText = (strText ?? string.Empty);
+            m_msgButtons = msgButtons;
+            m_msgIcon = msgIcon;
+        }
+    }
 
-	public static class MessageService
-	{
-		private static volatile uint m_uCurrentMessageCount = 0;
+    public static class MessageService
+    {
+        private static volatile uint m_uCurrentMessageCount = 0;
 
 #if !KeePassLibSD
-		private const MessageBoxIcon m_mbiInfo = MessageBoxIcon.Information;
-		private const MessageBoxIcon m_mbiWarning = MessageBoxIcon.Warning;
-		private const MessageBoxIcon m_mbiFatal = MessageBoxIcon.Error;
+        private const MessageBoxIcon m_mbiInfo = MessageBoxIcon.Information;
+        private const MessageBoxIcon m_mbiWarning = MessageBoxIcon.Warning;
+        private const MessageBoxIcon m_mbiFatal = MessageBoxIcon.Error;
 
-		private const MessageBoxOptions m_mboRtl = (MessageBoxOptions.RtlReading |
-			MessageBoxOptions.RightAlign);
+        private const MessageBoxOptions m_mboRtl = (MessageBoxOptions.RtlReading |
+            MessageBoxOptions.RightAlign);
 #else
 		private const MessageBoxIcon m_mbiInfo = MessageBoxIcon.Asterisk;
 		private const MessageBoxIcon m_mbiWarning = MessageBoxIcon.Exclamation;
 		private const MessageBoxIcon m_mbiFatal = MessageBoxIcon.Hand;
 #endif
-		private const MessageBoxIcon m_mbiQuestion = MessageBoxIcon.Question;
+        private const MessageBoxIcon m_mbiQuestion = MessageBoxIcon.Question;
 
-		public static string NewLine
-		{
+        public static string NewLine
+        {
 #if !KeePassLibSD
-			get { return Environment.NewLine; }
+            get { return Environment.NewLine; }
 #else
 			get { return "\r\n"; }
 #endif
-		}
+        }
 
-		public static string NewParagraph
-		{
+        public static string NewParagraph
+        {
 #if !KeePassLibSD
-			get { return Environment.NewLine + Environment.NewLine; }
+            get { return Environment.NewLine + Environment.NewLine; }
 #else
 			get { return "\r\n\r\n"; }
 #endif
-		}
+        }
 
-		public static uint CurrentMessageCount
-		{
-			get { return m_uCurrentMessageCount; }
-		}
+        public static uint CurrentMessageCount
+        {
+            get { return m_uCurrentMessageCount; }
+        }
 
 #if !KeePassUAP
 		public static event EventHandler<MessageServiceEventArgs> MessageShowing;
 #endif
 
-		private static string ObjectsToMessage(object[] vLines)
-		{
-			return ObjectsToMessage(vLines, false);
-		}
+        private static string ObjectsToMessage(object[] vLines)
+        {
+            return ObjectsToMessage(vLines, false);
+        }
 
-		private static string ObjectsToMessage(object[] vLines, bool bFullExceptions)
-		{
-			if(vLines == null) return string.Empty;
+        private static string ObjectsToMessage(object[] vLines, bool bFullExceptions)
+        {
+            if (vLines == null) return string.Empty;
 
-			string strNewPara = MessageService.NewParagraph;
+            string strNewPara = MessageService.NewParagraph;
 
-			StringBuilder sbText = new StringBuilder();
-			bool bSeparator = false;
+            StringBuilder sbText = new StringBuilder();
+            bool bSeparator = false;
 
-			foreach(object obj in vLines)
-			{
-				if(obj == null) continue;
+            foreach (object obj in vLines)
+            {
+                if (obj == null) continue;
 
-				string strAppend = null;
+                string strAppend = null;
 
-				Exception exObj = (obj as Exception);
-				string strObj = (obj as string);
+                Exception exObj = (obj as Exception);
+                string strObj = (obj as string);
 #if !KeePassLibSD
-				StringCollection scObj = (obj as StringCollection);
+                StringCollection scObj = (obj as StringCollection);
 #endif
 
-				if(exObj != null)
-				{
-					if(bFullExceptions)
-						strAppend = StrUtil.FormatException(exObj);
-					else if((exObj.Message != null) && (exObj.Message.Length > 0))
-						strAppend = exObj.Message;
-				}
+                if (exObj != null)
+                {
+                    if (bFullExceptions)
+                        strAppend = StrUtil.FormatException(exObj);
+                    else if ((exObj.Message != null) && (exObj.Message.Length > 0))
+                        strAppend = exObj.Message;
+                }
 #if !KeePassLibSD
-				else if(scObj != null)
-				{
-					StringBuilder sb = new StringBuilder();
-					foreach(string strCollLine in scObj)
-					{
-						if(sb.Length > 0) sb.AppendLine();
-						sb.Append(strCollLine.TrimEnd());
-					}
-					strAppend = sb.ToString();
-				}
+                else if (scObj != null)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    foreach (string strCollLine in scObj)
+                    {
+                        if (sb.Length > 0) sb.AppendLine();
+                        sb.Append(strCollLine.TrimEnd());
+                    }
+                    strAppend = sb.ToString();
+                }
 #endif
-				else if(strObj != null)
-					strAppend = strObj;
-				else
-					strAppend = obj.ToString();
+                else if (strObj != null)
+                    strAppend = strObj;
+                else
+                    strAppend = obj.ToString();
 
-				if(!string.IsNullOrEmpty(strAppend))
-				{
-					if(bSeparator) sbText.Append(strNewPara);
-					else bSeparator = true;
+                if (!string.IsNullOrEmpty(strAppend))
+                {
+                    if (bSeparator) sbText.Append(strNewPara);
+                    else bSeparator = true;
 
-					sbText.Append(strAppend);
-				}
-			}
+                    sbText.Append(strAppend);
+                }
+            }
 
-			return sbText.ToString();
-		}
+            return sbText.ToString();
+        }
 
 #if (!KeePassLibSD && !KeePassUAP)
 		internal static Form GetTopForm()
@@ -405,52 +405,52 @@ namespace KeePassLib.Utility
 		}
 #endif // !KeePassUAP
 
-		internal static string GetLoadWarningMessage(string strFilePath,
-			Exception ex, bool bFullException)
-		{
-			string str = string.Empty;
+        internal static string GetLoadWarningMessage(string strFilePath,
+            Exception ex, bool bFullException)
+        {
+            string str = string.Empty;
 
-			if(!string.IsNullOrEmpty(strFilePath))
-				str += strFilePath + MessageService.NewParagraph;
+            if (!string.IsNullOrEmpty(strFilePath))
+                str += strFilePath + MessageService.NewParagraph;
 
-			str += KLRes.FileLoadFailed;
+            str += KLRes.FileLoadFailed;
 
-			if((ex != null) && !string.IsNullOrEmpty(ex.Message))
-			{
-				str += MessageService.NewParagraph;
-				if(!bFullException) str += ex.Message;
-				else str += ObjectsToMessage(new object[] { ex }, true);
-			}
+            if ((ex != null) && !string.IsNullOrEmpty(ex.Message))
+            {
+                str += MessageService.NewParagraph;
+                if (!bFullException) str += ex.Message;
+                else str += ObjectsToMessage(new object[] { ex }, true);
+            }
 
-			return str;
-		}
+            return str;
+        }
 
-		internal static string GetSaveWarningMessage(string strFilePath,
-			Exception ex, bool bCorruptionWarning)
-		{
-			string str = string.Empty;
-			if(!string.IsNullOrEmpty(strFilePath))
-				str += strFilePath + MessageService.NewParagraph;
+        internal static string GetSaveWarningMessage(string strFilePath,
+            Exception ex, bool bCorruptionWarning)
+        {
+            string str = string.Empty;
+            if (!string.IsNullOrEmpty(strFilePath))
+                str += strFilePath + MessageService.NewParagraph;
 
-			str += KLRes.FileSaveFailed;
+            str += KLRes.FileSaveFailed;
 
-			if((ex != null) && !string.IsNullOrEmpty(ex.Message))
-				str += MessageService.NewParagraph + ex.Message;
+            if ((ex != null) && !string.IsNullOrEmpty(ex.Message))
+                str += MessageService.NewParagraph + ex.Message;
 
-			if(bCorruptionWarning)
-				str += MessageService.NewParagraph + KLRes.FileSaveCorruptionWarning;
+            if (bCorruptionWarning)
+                str += MessageService.NewParagraph + KLRes.FileSaveCorruptionWarning;
 
-			return str;
-		}
+            return str;
+        }
 
-		public static void ExternalIncrementMessageCount()
-		{
-			++m_uCurrentMessageCount;
-		}
+        public static void ExternalIncrementMessageCount()
+        {
+            ++m_uCurrentMessageCount;
+        }
 
-		public static void ExternalDecrementMessageCount()
-		{
-			--m_uCurrentMessageCount;
-		}
-	}
+        public static void ExternalDecrementMessageCount()
+        {
+            --m_uCurrentMessageCount;
+        }
+    }
 }

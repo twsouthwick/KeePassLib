@@ -21,17 +21,17 @@ using System;
 
 namespace KeePassLib.Interfaces
 {
-	public interface IStructureItem : ITimeLogger // Provides LocationChanged
-	{
-		PwUuid Uuid
-		{
-			get;
-			set;
-		}
+    public interface IStructureItem : ITimeLogger // Provides LocationChanged
+    {
+        PwUuid Uuid
+        {
+            get;
+            set;
+        }
 
-		PwGroup ParentGroup
-		{
-			get;
-		}
-	}
+        PwGroup ParentGroup
+        {
+            get;
+        }
+    }
 }

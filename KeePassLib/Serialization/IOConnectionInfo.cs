@@ -30,153 +30,153 @@ using KeePassLib.Utility;
 
 namespace KeePassLib.Serialization
 {
-	public enum IOCredSaveMode
-	{
-		/// <summary>
-		/// Do not remember user name or password.
-		/// </summary>
-		NoSave = 0,
+    public enum IOCredSaveMode
+    {
+        /// <summary>
+        /// Do not remember user name or password.
+        /// </summary>
+        NoSave = 0,
 
-		/// <summary>
-		/// Remember the user name only, not the password.
-		/// </summary>
-		UserNameOnly,
+        /// <summary>
+        /// Remember the user name only, not the password.
+        /// </summary>
+        UserNameOnly,
 
-		/// <summary>
-		/// Save both user name and password.
-		/// </summary>
-		SaveCred
-	}
+        /// <summary>
+        /// Save both user name and password.
+        /// </summary>
+        SaveCred
+    }
 
-	public enum IOCredProtMode
-	{
-		None = 0,
-		Obf
-	}
+    public enum IOCredProtMode
+    {
+        None = 0,
+        Obf
+    }
 
-	/* public enum IOFileFormatHint
+    /* public enum IOFileFormatHint
 	{
 		None = 0,
 		Deprecated
 	} */
 
-	public sealed class IOConnectionInfo : IDeepCloneable<IOConnectionInfo>
-	{
-		// private IOFileFormatHint m_ioHint = IOFileFormatHint.None;
+    public sealed class IOConnectionInfo : IDeepCloneable<IOConnectionInfo>
+    {
+        // private IOFileFormatHint m_ioHint = IOFileFormatHint.None;
 
-		private string m_strUrl = string.Empty;
-		public string Path
-		{
-			get { return m_strUrl; }
-			set
-			{
-				Debug.Assert(value != null);
-				if(value == null) throw new ArgumentNullException("value");
+        private string m_strUrl = string.Empty;
+        public string Path
+        {
+            get { return m_strUrl; }
+            set
+            {
+                Debug.Assert(value != null);
+                if (value == null) throw new ArgumentNullException("value");
 
-				m_strUrl = value;
-			}
-		}
+                m_strUrl = value;
+            }
+        }
 
-		private string m_strUser = string.Empty;
-		[DefaultValue("")]
-		public string UserName
-		{
-			get { return m_strUser; }
-			set
-			{
-				Debug.Assert(value != null);
-				if(value == null) throw new ArgumentNullException("value");
+        private string m_strUser = string.Empty;
+        [DefaultValue("")]
+        public string UserName
+        {
+            get { return m_strUser; }
+            set
+            {
+                Debug.Assert(value != null);
+                if (value == null) throw new ArgumentNullException("value");
 
-				m_strUser = value;
-			}
-		}
+                m_strUser = value;
+            }
+        }
 
-		private string m_strPassword = string.Empty;
-		[DefaultValue("")]
-		public string Password
-		{
-			get { return m_strPassword; }
-			set
-			{
-				Debug.Assert(value != null);
-				if(value == null) throw new ArgumentNullException("value");
+        private string m_strPassword = string.Empty;
+        [DefaultValue("")]
+        public string Password
+        {
+            get { return m_strPassword; }
+            set
+            {
+                Debug.Assert(value != null);
+                if (value == null) throw new ArgumentNullException("value");
 
-				m_strPassword = value;
-			}
-		}
+                m_strPassword = value;
+            }
+        }
 
-		private IOCredProtMode m_ioCredProtMode = IOCredProtMode.None;
-		public IOCredProtMode CredProtMode
-		{
-			get { return m_ioCredProtMode; }
-			set { m_ioCredProtMode = value; }
-		}
+        private IOCredProtMode m_ioCredProtMode = IOCredProtMode.None;
+        public IOCredProtMode CredProtMode
+        {
+            get { return m_ioCredProtMode; }
+            set { m_ioCredProtMode = value; }
+        }
 
-		private IOCredSaveMode m_ioCredSaveMode = IOCredSaveMode.NoSave;
-		public IOCredSaveMode CredSaveMode
-		{
-			get { return m_ioCredSaveMode; }
-			set { m_ioCredSaveMode = value; }
-		}
+        private IOCredSaveMode m_ioCredSaveMode = IOCredSaveMode.NoSave;
+        public IOCredSaveMode CredSaveMode
+        {
+            get { return m_ioCredSaveMode; }
+            set { m_ioCredSaveMode = value; }
+        }
 
-		private bool m_bComplete = false;
-		[XmlIgnore]
-		public bool IsComplete // Credentials etc. fully specified
-		{
-			get { return m_bComplete; }
-			set { m_bComplete = value; }
-		}
+        private bool m_bComplete = false;
+        [XmlIgnore]
+        public bool IsComplete // Credentials etc. fully specified
+        {
+            get { return m_bComplete; }
+            set { m_bComplete = value; }
+        }
 
-		/* public IOFileFormatHint FileFormatHint
+        /* public IOFileFormatHint FileFormatHint
 		{
 			get { return m_ioHint; }
 			set { m_ioHint = value; }
 		} */
 
-		private IocProperties m_props = new IocProperties();
-		[XmlIgnore]
-		public IocProperties Properties
-		{
-			get { return m_props; }
-			set
-			{
-				if(value == null) throw new ArgumentNullException("value");
-				m_props = value;
-			}
-		}
+        private IocProperties m_props = new IocProperties();
+        [XmlIgnore]
+        public IocProperties Properties
+        {
+            get { return m_props; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("value");
+                m_props = value;
+            }
+        }
 
-		/// <summary>
-		/// For serialization only; use <c>Properties</c> in code.
-		/// </summary>
-		[DefaultValue("")]
-		public string PropertiesEx
-		{
-			get { return m_props.Serialize(); }
-			set
-			{
-				if(value == null) throw new ArgumentNullException("value");
+        /// <summary>
+        /// For serialization only; use <c>Properties</c> in code.
+        /// </summary>
+        [DefaultValue("")]
+        public string PropertiesEx
+        {
+            get { return m_props.Serialize(); }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("value");
 
-				IocProperties p = IocProperties.Deserialize(value);
-				Debug.Assert(p != null);
-				m_props = (p ?? new IocProperties());
-			}
-		}
+                IocProperties p = IocProperties.Deserialize(value);
+                Debug.Assert(p != null);
+                m_props = (p ?? new IocProperties());
+            }
+        }
 
-		public IOConnectionInfo CloneDeep()
-		{
-			IOConnectionInfo ioc = (IOConnectionInfo)this.MemberwiseClone();
-			ioc.m_props = m_props.CloneDeep();
-			return ioc;
-		}
+        public IOConnectionInfo CloneDeep()
+        {
+            IOConnectionInfo ioc = (IOConnectionInfo)this.MemberwiseClone();
+            ioc.m_props = m_props.CloneDeep();
+            return ioc;
+        }
 
 #if DEBUG // For debugger display only
-		public override string ToString()
-		{
-			return GetDisplayName();
-		}
+        public override string ToString()
+        {
+            return GetDisplayName();
+        }
 #endif
 
-		/*
+        /*
 		/// <summary>
 		/// Serialize the current connection info to a string. Credentials
 		/// are serialized based on the <c>CredSaveMode</c> property.
@@ -253,7 +253,7 @@ namespace KeePassLib.Serialization
 		}
 		*/
 
-		/*
+        /*
 		/// <summary>
 		/// Very simple string protection. Doesn't really encrypt the input
 		/// string, only encodes it that it's not readable on the first glance.
@@ -294,72 +294,72 @@ namespace KeePassLib.Serialization
 		}
 		*/
 
-		public string GetDisplayName()
-		{
-			string str = m_strUrl;
+        public string GetDisplayName()
+        {
+            string str = m_strUrl;
 
-			if(m_strUser.Length > 0)
-				str += (" (" + m_strUser + ")");
+            if (m_strUser.Length > 0)
+                str += (" (" + m_strUser + ")");
 
-			return str;
-		}
+            return str;
+        }
 
-		public bool IsEmpty()
-		{
-			return (m_strUrl.Length == 0);
-		}
+        public bool IsEmpty()
+        {
+            return (m_strUrl.Length == 0);
+        }
 
-		public static IOConnectionInfo FromPath(string strPath)
-		{
-			IOConnectionInfo ioc = new IOConnectionInfo();
+        public static IOConnectionInfo FromPath(string strPath)
+        {
+            IOConnectionInfo ioc = new IOConnectionInfo();
 
-			ioc.Path = strPath;
-			ioc.CredSaveMode = IOCredSaveMode.NoSave;
+            ioc.Path = strPath;
+            ioc.CredSaveMode = IOCredSaveMode.NoSave;
 
-			return ioc;
-		}
+            return ioc;
+        }
 
-		public bool CanProbablyAccess()
-		{
-			if(IsLocalFile()) return File.Exists(m_strUrl);
+        public bool CanProbablyAccess()
+        {
+            if (IsLocalFile()) return File.Exists(m_strUrl);
 
-			return true;
-		}
+            return true;
+        }
 
-		public bool IsLocalFile()
-		{
-			// Not just ":/", see e.g. AppConfigEx.ChangePathRelAbs
-			return (m_strUrl.IndexOf("://") < 0);
-		}
+        public bool IsLocalFile()
+        {
+            // Not just ":/", see e.g. AppConfigEx.ChangePathRelAbs
+            return (m_strUrl.IndexOf("://") < 0);
+        }
 
-		public void ClearCredentials(bool bDependingOnRememberMode)
-		{
-			if((bDependingOnRememberMode == false) ||
-				(m_ioCredSaveMode == IOCredSaveMode.NoSave))
-			{
-				m_strUser = string.Empty;
-			}
+        public void ClearCredentials(bool bDependingOnRememberMode)
+        {
+            if ((bDependingOnRememberMode == false) ||
+                (m_ioCredSaveMode == IOCredSaveMode.NoSave))
+            {
+                m_strUser = string.Empty;
+            }
 
-			if((bDependingOnRememberMode == false) ||
-				(m_ioCredSaveMode == IOCredSaveMode.NoSave) ||
-				(m_ioCredSaveMode == IOCredSaveMode.UserNameOnly))
-			{
-				m_strPassword = string.Empty;
-			}
-		}
+            if ((bDependingOnRememberMode == false) ||
+                (m_ioCredSaveMode == IOCredSaveMode.NoSave) ||
+                (m_ioCredSaveMode == IOCredSaveMode.UserNameOnly))
+            {
+                m_strPassword = string.Empty;
+            }
+        }
 
-		public void Obfuscate(bool bObf)
-		{
-			if(bObf && (m_ioCredProtMode == IOCredProtMode.None))
-			{
-				m_strPassword = StrUtil.Obfuscate(m_strPassword);
-				m_ioCredProtMode = IOCredProtMode.Obf;
-			}
-			else if(!bObf && (m_ioCredProtMode == IOCredProtMode.Obf))
-			{
-				m_strPassword = StrUtil.Deobfuscate(m_strPassword);
-				m_ioCredProtMode = IOCredProtMode.None;
-			}
-		}
-	}
+        public void Obfuscate(bool bObf)
+        {
+            if (bObf && (m_ioCredProtMode == IOCredProtMode.None))
+            {
+                m_strPassword = StrUtil.Obfuscate(m_strPassword);
+                m_ioCredProtMode = IOCredProtMode.Obf;
+            }
+            else if (!bObf && (m_ioCredProtMode == IOCredProtMode.Obf))
+            {
+                m_strPassword = StrUtil.Deobfuscate(m_strPassword);
+                m_ioCredProtMode = IOCredProtMode.None;
+            }
+        }
+    }
 }

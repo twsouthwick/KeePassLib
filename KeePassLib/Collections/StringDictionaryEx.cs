@@ -31,86 +31,86 @@ using KeePassLibSD;
 
 namespace KeePassLib.Collections
 {
-	public sealed class StringDictionaryEx : IDeepCloneable<StringDictionaryEx>,
-		IEnumerable<KeyValuePair<string, string>>
-	{
-		private SortedDictionary<string, string> m_vDict =
-			new SortedDictionary<string, string>();
+    public sealed class StringDictionaryEx : IDeepCloneable<StringDictionaryEx>,
+        IEnumerable<KeyValuePair<string, string>>
+    {
+        private SortedDictionary<string, string> m_vDict =
+            new SortedDictionary<string, string>();
 
-		public int Count
-		{
-			get { return m_vDict.Count; }
-		}
+        public int Count
+        {
+            get { return m_vDict.Count; }
+        }
 
-		public StringDictionaryEx()
-		{
-		}
+        public StringDictionaryEx()
+        {
+        }
 
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return m_vDict.GetEnumerator();
-		}
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return m_vDict.GetEnumerator();
+        }
 
-		public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
-		{
-			return m_vDict.GetEnumerator();
-		}
+        public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
+        {
+            return m_vDict.GetEnumerator();
+        }
 
-		public StringDictionaryEx CloneDeep()
-		{
-			StringDictionaryEx plNew = new StringDictionaryEx();
+        public StringDictionaryEx CloneDeep()
+        {
+            StringDictionaryEx plNew = new StringDictionaryEx();
 
-			foreach(KeyValuePair<string, string> kvpStr in m_vDict)
-				plNew.Set(kvpStr.Key, kvpStr.Value);
+            foreach (KeyValuePair<string, string> kvpStr in m_vDict)
+                plNew.Set(kvpStr.Key, kvpStr.Value);
 
-			return plNew;
-		}
+            return plNew;
+        }
 
-		public string Get(string strName)
-		{
-			Debug.Assert(strName != null); if(strName == null) throw new ArgumentNullException("strName");
+        public string Get(string strName)
+        {
+            Debug.Assert(strName != null); if (strName == null) throw new ArgumentNullException("strName");
 
-			string s;
-			if(m_vDict.TryGetValue(strName, out s)) return s;
+            string s;
+            if (m_vDict.TryGetValue(strName, out s)) return s;
 
-			return null;
-		}
+            return null;
+        }
 
-		public bool Exists(string strName)
-		{
-			Debug.Assert(strName != null); if(strName == null) throw new ArgumentNullException("strName");
+        public bool Exists(string strName)
+        {
+            Debug.Assert(strName != null); if (strName == null) throw new ArgumentNullException("strName");
 
-			return m_vDict.ContainsKey(strName);
-		}
+            return m_vDict.ContainsKey(strName);
+        }
 
-		/// <summary>
-		/// Set a string.
-		/// </summary>
-		/// <param name="strField">Identifier of the string field to modify.</param>
-		/// <param name="strNewValue">New value. This parameter must not be <c>null</c>.</param>
-		/// <exception cref="System.ArgumentNullException">Thrown if one of the input
-		/// parameters is <c>null</c>.</exception>
-		public void Set(string strField, string strNewValue)
-		{
-			Debug.Assert(strField != null); if(strField == null) throw new ArgumentNullException("strField");
-			Debug.Assert(strNewValue != null); if(strNewValue == null) throw new ArgumentNullException("strNewValue");
+        /// <summary>
+        /// Set a string.
+        /// </summary>
+        /// <param name="strField">Identifier of the string field to modify.</param>
+        /// <param name="strNewValue">New value. This parameter must not be <c>null</c>.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown if one of the input
+        /// parameters is <c>null</c>.</exception>
+        public void Set(string strField, string strNewValue)
+        {
+            Debug.Assert(strField != null); if (strField == null) throw new ArgumentNullException("strField");
+            Debug.Assert(strNewValue != null); if (strNewValue == null) throw new ArgumentNullException("strNewValue");
 
-			m_vDict[strField] = strNewValue;
-		}
+            m_vDict[strField] = strNewValue;
+        }
 
-		/// <summary>
-		/// Delete a string.
-		/// </summary>
-		/// <param name="strField">Name of the string field to delete.</param>
-		/// <returns>Returns <c>true</c> if the field has been successfully
-		/// removed, otherwise the return value is <c>false</c>.</returns>
-		/// <exception cref="System.ArgumentNullException">Thrown if the input
-		/// parameter is <c>null</c>.</exception>
-		public bool Remove(string strField)
-		{
-			Debug.Assert(strField != null); if(strField == null) throw new ArgumentNullException("strField");
+        /// <summary>
+        /// Delete a string.
+        /// </summary>
+        /// <param name="strField">Name of the string field to delete.</param>
+        /// <returns>Returns <c>true</c> if the field has been successfully
+        /// removed, otherwise the return value is <c>false</c>.</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown if the input
+        /// parameter is <c>null</c>.</exception>
+        public bool Remove(string strField)
+        {
+            Debug.Assert(strField != null); if (strField == null) throw new ArgumentNullException("strField");
 
-			return m_vDict.Remove(strField);
-		}
-	}
+            return m_vDict.Remove(strField);
+        }
+    }
 }

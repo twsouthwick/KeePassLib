@@ -31,8 +31,8 @@ using System.Drawing.Imaging;
 
 namespace KeePassLib.Utility
 {
-	public static class GfxUtil
-	{
+    public static class GfxUtil
+    {
 #if (!KeePassLibSD && !KeePassUAP)
 		private sealed class GfxImage
 		{
@@ -59,14 +59,14 @@ namespace KeePassLib.Utility
 #endif
 
 #if KeePassUAP
-		public static Image LoadImage(byte[] pb)
-		{
-			if(pb == null) throw new ArgumentNullException("pb");
+        public static Image LoadImage(byte[] pb)
+        {
+            if (pb == null) throw new ArgumentNullException("pb");
 
-			MemoryStream ms = new MemoryStream(pb, false);
-			try { return Image.FromStream(ms); }
-			finally { ms.Close(); }
-		}
+            MemoryStream ms = new MemoryStream(pb, false);
+            try { return Image.FromStream(ms); }
+            finally { ms.Close(); }
+        }
 #else
 		public static Image LoadImage(byte[] pb)
 		{
@@ -425,5 +425,5 @@ namespace KeePassLib.Utility
 #endif // DEBUG
 #endif // !KeePassLibSD
 #endif // KeePassUAP
-	}
+    }
 }

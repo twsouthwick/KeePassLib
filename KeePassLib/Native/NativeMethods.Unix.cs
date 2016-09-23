@@ -30,8 +30,8 @@ using System.Windows.Forms;
 
 namespace KeePassLib.Native
 {
-	internal static partial class NativeMethods
-	{
+    internal static partial class NativeMethods
+    {
 #if (!KeePassLibSD && !KeePassUAP)
 		[StructLayout(LayoutKind.Sequential)]
 		private struct XClassHint
@@ -111,5 +111,5 @@ namespace KeePassLib.Native
 			catch(Exception) { Debug.Assert(false); }
 		}
 #endif
-	}
+    }
 }

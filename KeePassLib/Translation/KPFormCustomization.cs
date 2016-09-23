@@ -29,44 +29,44 @@ using System.Windows.Forms;
 
 namespace KeePassLib.Translation
 {
-	public sealed class KPFormCustomization
-	{
-		private string m_strFQName = string.Empty;
-		/// <summary>
-		/// The fully qualified name of the form.
-		/// </summary>
-		[XmlAttribute]
-		public string FullName
-		{
-			get { return m_strFQName; }
-			set
-			{
-				if(value == null) throw new ArgumentNullException("value");
-				m_strFQName = value;
-			}
-		}
+    public sealed class KPFormCustomization
+    {
+        private string m_strFQName = string.Empty;
+        /// <summary>
+        /// The fully qualified name of the form.
+        /// </summary>
+        [XmlAttribute]
+        public string FullName
+        {
+            get { return m_strFQName; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("value");
+                m_strFQName = value;
+            }
+        }
 
-		private KPControlCustomization m_ccWindow = new KPControlCustomization();
-		public KPControlCustomization Window
-		{
-			get { return m_ccWindow; }
-			set { m_ccWindow = value; }
-		}
+        private KPControlCustomization m_ccWindow = new KPControlCustomization();
+        public KPControlCustomization Window
+        {
+            get { return m_ccWindow; }
+            set { m_ccWindow = value; }
+        }
 
-		private List<KPControlCustomization> m_vControls =
-			new List<KPControlCustomization>();
-		[XmlArray("ChildControls")]
-		[XmlArrayItem("Control")]
-		public List<KPControlCustomization> Controls
-		{
-			get { return m_vControls; }
-			set
-			{
-				if(value == null) throw new ArgumentNullException("value");
+        private List<KPControlCustomization> m_vControls =
+            new List<KPControlCustomization>();
+        [XmlArray("ChildControls")]
+        [XmlArrayItem("Control")]
+        public List<KPControlCustomization> Controls
+        {
+            get { return m_vControls; }
+            set
+            {
+                if (value == null) throw new ArgumentNullException("value");
 
-				m_vControls = value;
-			}
-		}
+                m_vControls = value;
+            }
+        }
 
 #if (!KeePassLibSD && !KeePassUAP)
 		private Form m_formEnglish = null;
@@ -104,5 +104,5 @@ namespace KeePassLib.Translation
 			foreach(Control cSub in c.Controls) ApplyToControl(cSub);
 		}
 #endif
-	}
+    }
 }
