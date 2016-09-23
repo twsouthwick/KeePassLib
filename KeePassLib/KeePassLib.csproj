@@ -77,6 +77,7 @@
     <Compile Include="Keys\UserKeyType.cs" />
     <Compile Include="Native\NativeMethods.cs" />
     <Compile Include="Native\NativeMethods.Unix.cs" />
+    <Compile Include="Portability\XmlExtensions.cs" />
     <Compile Include="PwCustomIcon.cs" />
     <Compile Include="Resources\KLRes.Generated.cs" />
     <Compile Include="Resources\KSRes.Generated.cs" />
