@@ -17,18 +17,12 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+using KeePassLib.Cryptography;
+using KeePassLib.Cryptography.Cipher;
+using KeePassLib.Utility;
 using System;
 using System.Diagnostics;
 using System.Threading;
-
-#if !KeePassUAP
-using System.Security.Cryptography;
-#endif
-
-using KeePassLib.Cryptography;
-using KeePassLib.Cryptography.Cipher;
-using KeePassLib.Native;
-using KeePassLib.Utility;
 
 #if KeePassLibSD
 using KeePassLibSD;
@@ -81,46 +75,46 @@ namespace KeePassLib.Security
         }
 
         // ProtectedMemory is supported only on Windows 2000 SP3 and higher
-#if !KeePassLibSD
-        private static bool? g_obProtectedMemorySupported = null;
+#if !KeePassLibSD && !KeePassUAP
+		private static bool? g_obProtectedMemorySupported = null;
 #endif
         private static bool ProtectedMemorySupported
         {
             get
             {
-#if KeePassLibSD
-				return false;
+#if KeePassLibSD || KeePassUAP
+                return false;
 #else
-                bool? ob = g_obProtectedMemorySupported;
-                if (ob.HasValue) return ob.Value;
+				bool? ob = g_obProtectedMemorySupported;
+				if (ob.HasValue) return ob.Value;
 
-                // Mono does not implement any encryption for ProtectedMemory;
-                // https://sourceforge.net/p/keepass/feature-requests/1907/
-                if (NativeLib.IsUnix())
-                {
-                    g_obProtectedMemorySupported = false;
-                    return false;
-                }
+				// Mono does not implement any encryption for ProtectedMemory;
+				// https://sourceforge.net/p/keepass/feature-requests/1907/
+				if (NativeLib.IsUnix())
+				{
+					g_obProtectedMemorySupported = false;
+					return false;
+				}
 
-                ob = false;
-                try // Test whether ProtectedMemory is supported
-                {
-                    // BlockSize * 3 in order to test encryption for multiple
-                    // blocks, but not introduce a power of 2 as factor
-                    byte[] pb = new byte[ProtectedBinary.BlockSize * 3];
-                    for (int i = 0; i < pb.Length; ++i) pb[i] = (byte)i;
+				ob = false;
+				try // Test whether ProtectedMemory is supported
+				{
+					// BlockSize * 3 in order to test encryption for multiple
+					// blocks, but not introduce a power of 2 as factor
+					byte[] pb = new byte[ProtectedBinary.BlockSize * 3];
+					for (int i = 0; i < pb.Length; ++i) pb[i] = (byte)i;
 
-                    ProtectedMemory.Protect(pb, MemoryProtectionScope.SameProcess);
+					ProtectedMemory.Protect(pb, MemoryProtectionScope.SameProcess);
 
-                    for (int i = 0; i < pb.Length; ++i)
-                    {
-                        if (pb[i] != (byte)i) { ob = true; break; }
-                    }
-                }
-                catch (Exception) { } // Windows 98 / ME
+					for (int i = 0; i < pb.Length; ++i)
+					{
+						if (pb[i] != (byte)i) { ob = true; break; }
+					}
+				}
+				catch (Exception) { } // Windows 98 / ME
 
-                g_obProtectedMemorySupported = ob;
-                return ob.Value;
+				g_obProtectedMemorySupported = ob;
+				return ob.Value;
 #endif
             }
         }

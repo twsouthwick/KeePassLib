@@ -225,12 +225,12 @@ namespace KeePassLib.Utility
                     "Unicode (UTF-8)", StrUtil.Utf8, 1, new byte[] { 0xEF, 0xBB, 0xBF }));
 #else
 #if !KeePassLibSD
-					Encoding.Default.EncodingName,
+                    Encoding.Default.EncodingName,
 #else
-					Encoding.Default.WebName,
+                    Encoding.Default.WebName,
 #endif
-					Encoding.Default,
-					(uint)Encoding.Default.GetBytes("a").Length, null));
+                    Encoding.Default,
+                    (uint)Encoding.Default.GetBytes("a").Length, null));
 #endif
 
                 l.Add(new StrEncodingInfo(StrEncodingType.Ascii,
@@ -498,8 +498,8 @@ namespace KeePassLib.Utility
                 strText += excp.StackTrace + MessageService.NewLine;
 #if !KeePassLibSD
 #if !KeePassUAP
-			if(excp.TargetSite != null)
-				strText += excp.TargetSite.ToString() + MessageService.NewLine;
+            if(excp.TargetSite != null)
+                strText += excp.TargetSite.ToString() + MessageService.NewLine;
 #endif
 
             if (excp.Data != null)
@@ -524,8 +524,8 @@ namespace KeePassLib.Utility
                     strText += excp.InnerException.StackTrace + MessageService.NewLine;
 #if !KeePassLibSD
 #if !KeePassUAP
-				if(excp.InnerException.TargetSite != null)
-					strText += excp.InnerException.TargetSite.ToString();
+                if(excp.InnerException.TargetSite != null)
+                    strText += excp.InnerException.TargetSite.ToString();
 #endif
 
                 if (excp.InnerException.Data != null)
@@ -546,8 +546,8 @@ namespace KeePassLib.Utility
 #if !KeePassLibSD
             return ushort.TryParse(str, out u);
 #else
-			try { u = ushort.Parse(str); return true; }
-			catch(Exception) { u = 0; return false; }
+            try { u = ushort.Parse(str); return true; }
+            catch(Exception) { u = 0; return false; }
 #endif
         }
 
@@ -556,9 +556,9 @@ namespace KeePassLib.Utility
 #if !KeePassLibSD
             return int.TryParse(str, out n);
 #else
-			try { n = int.Parse(str); return true; }
-			catch(Exception) { n = 0; }
-			return false;
+            try { n = int.Parse(str); return true; }
+            catch(Exception) { n = 0; }
+            return false;
 #endif
         }
 
@@ -568,14 +568,14 @@ namespace KeePassLib.Utility
             return int.TryParse(str, NumberStyles.Integer,
                 NumberFormatInfo.InvariantInfo, out n);
 #else
-			try
-			{
-				n = int.Parse(str, NumberStyles.Integer,
-					NumberFormatInfo.InvariantInfo);
-				return true;
-			}
-			catch(Exception) { n = 0; }
-			return false;
+            try
+            {
+                n = int.Parse(str, NumberStyles.Integer,
+                    NumberFormatInfo.InvariantInfo);
+                return true;
+            }
+            catch(Exception) { n = 0; }
+            return false;
 #endif
         }
 
@@ -584,9 +584,9 @@ namespace KeePassLib.Utility
 #if !KeePassLibSD
             return uint.TryParse(str, out u);
 #else
-			try { u = uint.Parse(str); return true; }
-			catch(Exception) { u = 0; }
-			return false;
+            try { u = uint.Parse(str); return true; }
+            catch(Exception) { u = 0; }
+            return false;
 #endif
         }
 
@@ -596,14 +596,14 @@ namespace KeePassLib.Utility
             return uint.TryParse(str, NumberStyles.Integer,
                 NumberFormatInfo.InvariantInfo, out u);
 #else
-			try
-			{
-				u = uint.Parse(str, NumberStyles.Integer,
-					NumberFormatInfo.InvariantInfo);
-				return true;
-			}
-			catch(Exception) { u = 0; }
-			return false;
+            try
+            {
+                u = uint.Parse(str, NumberStyles.Integer,
+                    NumberFormatInfo.InvariantInfo);
+                return true;
+            }
+            catch(Exception) { u = 0; }
+            return false;
 #endif
         }
 
@@ -612,9 +612,9 @@ namespace KeePassLib.Utility
 #if !KeePassLibSD
             return long.TryParse(str, out n);
 #else
-			try { n = long.Parse(str); return true; }
-			catch(Exception) { n = 0; }
-			return false;
+            try { n = long.Parse(str); return true; }
+            catch(Exception) { n = 0; }
+            return false;
 #endif
         }
 
@@ -624,14 +624,14 @@ namespace KeePassLib.Utility
             return long.TryParse(str, NumberStyles.Integer,
                 NumberFormatInfo.InvariantInfo, out n);
 #else
-			try
-			{
-				n = long.Parse(str, NumberStyles.Integer,
-					NumberFormatInfo.InvariantInfo);
-				return true;
-			}
-			catch(Exception) { n = 0; }
-			return false;
+            try
+            {
+                n = long.Parse(str, NumberStyles.Integer,
+                    NumberFormatInfo.InvariantInfo);
+                return true;
+            }
+            catch(Exception) { n = 0; }
+            return false;
 #endif
         }
 
@@ -640,9 +640,9 @@ namespace KeePassLib.Utility
 #if !KeePassLibSD
             return ulong.TryParse(str, out u);
 #else
-			try { u = ulong.Parse(str); return true; }
-			catch(Exception) { u = 0; }
-			return false;
+            try { u = ulong.Parse(str); return true; }
+            catch(Exception) { u = 0; }
+            return false;
 #endif
         }
 
@@ -652,14 +652,14 @@ namespace KeePassLib.Utility
             return ulong.TryParse(str, NumberStyles.Integer,
                 NumberFormatInfo.InvariantInfo, out u);
 #else
-			try
-			{
-				u = ulong.Parse(str, NumberStyles.Integer,
-					NumberFormatInfo.InvariantInfo);
-				return true;
-			}
-			catch(Exception) { u = 0; }
-			return false;
+            try
+            {
+                u = ulong.Parse(str, NumberStyles.Integer,
+                    NumberFormatInfo.InvariantInfo);
+                return true;
+            }
+            catch(Exception) { u = 0; }
+            return false;
 #endif
         }
 
@@ -668,8 +668,8 @@ namespace KeePassLib.Utility
 #if !KeePassLibSD
             return DateTime.TryParse(str, out dt);
 #else
-			try { dt = DateTime.Parse(str); return true; }
-			catch(Exception) { dt = DateTime.MinValue; return false; }
+            try { dt = DateTime.Parse(str); return true; }
+            catch(Exception) { dt = DateTime.MinValue; return false; }
 #endif
         }
 
@@ -761,50 +761,50 @@ namespace KeePassLib.Utility
         }
 
         /* private static Regex g_rxNaturalSplit = null;
-		public static int CompareNaturally(string strX, string strY)
-		{
-			Debug.Assert(strX != null);
-			if(strX == null) throw new ArgumentNullException("strX");
-			Debug.Assert(strY != null);
-			if(strY == null) throw new ArgumentNullException("strY");
+        public static int CompareNaturally(string strX, string strY)
+        {
+            Debug.Assert(strX != null);
+            if(strX == null) throw new ArgumentNullException("strX");
+            Debug.Assert(strY != null);
+            if(strY == null) throw new ArgumentNullException("strY");
 
-			if(NativeMethods.SupportsStrCmpNaturally)
-				return NativeMethods.StrCmpNaturally(strX, strY);
+            if(NativeMethods.SupportsStrCmpNaturally)
+                return NativeMethods.StrCmpNaturally(strX, strY);
 
-			if(g_rxNaturalSplit == null)
-				g_rxNaturalSplit = new Regex(@"([0-9]+)", RegexOptions.Compiled);
+            if(g_rxNaturalSplit == null)
+                g_rxNaturalSplit = new Regex(@"([0-9]+)", RegexOptions.Compiled);
 
-			string[] vPartsX = g_rxNaturalSplit.Split(strX);
-			string[] vPartsY = g_rxNaturalSplit.Split(strY);
+            string[] vPartsX = g_rxNaturalSplit.Split(strX);
+            string[] vPartsY = g_rxNaturalSplit.Split(strY);
 
-			int n = Math.Min(vPartsX.Length, vPartsY.Length);
-			for(int i = 0; i < n; ++i)
-			{
-				string strPartX = vPartsX[i], strPartY = vPartsY[i];
-				int iPartCompare;
+            int n = Math.Min(vPartsX.Length, vPartsY.Length);
+            for(int i = 0; i < n; ++i)
+            {
+                string strPartX = vPartsX[i], strPartY = vPartsY[i];
+                int iPartCompare;
 
 #if KeePassLibSD
-				try
-				{
-					ulong uX = ulong.Parse(strPartX);
-					ulong uY = ulong.Parse(strPartY);
-					iPartCompare = uX.CompareTo(uY);
-				}
-				catch(Exception) { iPartCompare = string.Compare(strPartX, strPartY, true); }
+                try
+                {
+                    ulong uX = ulong.Parse(strPartX);
+                    ulong uY = ulong.Parse(strPartY);
+                    iPartCompare = uX.CompareTo(uY);
+                }
+                catch(Exception) { iPartCompare = string.Compare(strPartX, strPartY, true); }
 #else
-				ulong uX, uY;
-				if(ulong.TryParse(strPartX, out uX) && ulong.TryParse(strPartY, out uY))
-					iPartCompare = uX.CompareTo(uY);
-				else iPartCompare = string.Compare(strPartX, strPartY, true);
+                ulong uX, uY;
+                if(ulong.TryParse(strPartX, out uX) && ulong.TryParse(strPartY, out uY))
+                    iPartCompare = uX.CompareTo(uY);
+                else iPartCompare = string.Compare(strPartX, strPartY, true);
 #endif
 
-				if(iPartCompare != 0) return iPartCompare;
-			}
+                if(iPartCompare != 0) return iPartCompare;
+            }
 
-			if(vPartsX.Length == vPartsY.Length) return 0;
-			if(vPartsX.Length < vPartsY.Length) return -1;
-			return 1;
-		} */
+            if(vPartsX.Length == vPartsY.Length) return 0;
+            if(vPartsX.Length < vPartsY.Length) return -1;
+            return 1;
+        } */
 
         public static int CompareNaturally(string strX, string strY)
         {
@@ -939,7 +939,7 @@ namespace KeePassLib.Utility
                 char ch = strMenuText[i];
 
 #if KeePassLibSD
-				char chUpper = char.ToUpper(ch);
+                char chUpper = char.ToUpper(ch);
 #else
                 char chUpper = char.ToUpperInvariant(ch);
 #endif
@@ -947,7 +947,7 @@ namespace KeePassLib.Utility
                 if (xa >= 0) { xs = i; break; }
 
 #if KeePassLibSD
-				char chLower = char.ToLower(ch);
+                char chLower = char.ToLower(ch);
 #else
                 char chLower = char.ToLowerInvariant(ch);
 #endif
@@ -1278,12 +1278,16 @@ namespace KeePassLib.Utility
 
             try
             {
+#if !KeePassUAP
                 byte[] pbPlain = StrUtil.Utf8.GetBytes(strPlainText);
                 byte[] pbEnc = ProtectedData.Protect(pbPlain, m_pbOptEnt,
                     DataProtectionScope.CurrentUser);
+#else
+                byte[] pbEnc = StrUtil.Utf8.GetBytes(strPlainText);
+#endif
 
 #if (!KeePassLibSD && !KeePassUAP)
-				return Convert.ToBase64String(pbEnc, Base64FormattingOptions.None);
+                return Convert.ToBase64String(pbEnc, Base64FormattingOptions.None);
 #else
                 return Convert.ToBase64String(pbEnc);
 #endif
@@ -1299,9 +1303,14 @@ namespace KeePassLib.Utility
 
             try
             {
+#if !KeePassUAP
                 byte[] pbEnc = Convert.FromBase64String(strCipherText);
                 byte[] pbPlain = ProtectedData.Unprotect(pbEnc, m_pbOptEnt,
                     DataProtectionScope.CurrentUser);
+#else
+                byte[] pbPlain = Convert.FromBase64String(strCipherText);
+#endif
+
 
                 return StrUtil.Utf8.GetString(pbPlain, 0, pbPlain.Length);
             }
@@ -1396,7 +1405,7 @@ namespace KeePassLib.Utility
             for (int i = 0; i < pb.Length; ++i) pb[i] = (byte)(pb[i] ^ 0x65);
 
 #if (!KeePassLibSD && !KeePassUAP)
-			return Convert.ToBase64String(pb, Base64FormattingOptions.None);
+            return Convert.ToBase64String(pb, Base64FormattingOptions.None);
 #else
             return Convert.ToBase64String(pb);
 #endif
@@ -1556,8 +1565,8 @@ namespace KeePassLib.Utility
             if (strMimeType == null) strMimeType = "application/octet-stream";
 
 #if (!KeePassLibSD && !KeePassUAP)
-			return ("data:" + strMimeType + ";base64," + Convert.ToBase64String(
-				pbData, Base64FormattingOptions.None));
+            return ("data:" + strMimeType + ";base64," + Convert.ToBase64String(
+                pbData, Base64FormattingOptions.None));
 #else
             return ("data:" + strMimeType + ";base64," + Convert.ToBase64String(
                 pbData));

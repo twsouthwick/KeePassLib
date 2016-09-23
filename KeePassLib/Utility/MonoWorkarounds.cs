@@ -28,7 +28,6 @@ using System.Xml;
 
 #if !KeePassUAP
 using System.Windows.Forms;
-#endif
 
 using KeePassLib.Native;
 
@@ -115,17 +114,17 @@ namespace KeePassLib.Utility
         {
             if (!MonoWorkarounds.IsRequired()) return false;
 
-            bool bForce;
-            if (m_dForceReq.TryGetValue(uBugID, out bForce)) return bForce;
+			bool bForce;
+			if (m_dForceReq.TryGetValue(uBugID, out bForce)) return bForce;
 
-            ulong v = NativeLib.MonoVersion;
-            if (v != 0)
-            {
-                if (uBugID == 10163)
-                    return (v >= 0x0002000B00000000UL); // >= 2.11
-            }
+			ulong v = NativeLib.MonoVersion;
+			if (v != 0)
+			{
+				if (uBugID == 10163)
+					return (v >= 0x0002000B00000000UL); // >= 2.11
+			}
 
-            return true;
+			return true;
         }
 
         internal static void SetEnabled(string strIDs, bool bEnabled)
@@ -401,3 +400,4 @@ namespace KeePassLib.Utility
 #endif // !KeePassUAP
     }
 }
+#endif

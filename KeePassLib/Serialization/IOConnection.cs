@@ -207,16 +207,14 @@ namespace KeePassLib.Serialization
 		public override void Close()
 		{
 			base.Close();
-#endif
 
-#if !KeePassUAP
 			if(MonoWorkarounds.IsRequired(10163) && m_bWrite)
 			{
 				try
 				{
 					Stream s = this.BaseStream;
 					Type t = s.GetType();
-                    if(t.Name == "WebConnectionStream")
+					if(t.Name == "WebConnectionStream")
 					{
 						PropertyInfo pi = t.GetProperty("Request",
 							BindingFlags.Instance | BindingFlags.NonPublic);
@@ -239,8 +237,10 @@ namespace KeePassLib.Serialization
         {
             if (s == null) { Debug.Assert(false); return null; }
 
+#if FEATURE_MONO
             if (MonoWorkarounds.IsRequired(10163) && s.CanWrite)
                 return new IocStream(s);
+#endif
 
             return s;
         }
@@ -248,15 +248,14 @@ namespace KeePassLib.Serialization
 
     public static class IOConnection
     {
-#if !KeePassLibSD
-        private static ProxyServerType m_pstProxyType = ProxyServerType.System;
-        private static string m_strProxyAddr = string.Empty;
-        private static string m_strProxyPort = string.Empty;
-        private static ProxyAuthType m_patProxyAuthType = ProxyAuthType.Auto;
-        private static string m_strProxyUserName = string.Empty;
-        private static string m_strProxyPassword = string.Empty;
+#if !KeePassLibSD && !KeePassUAP
+		private static ProxyServerType m_pstProxyType = ProxyServerType.System;
+		private static string m_strProxyAddr = string.Empty;
+		private static string m_strProxyPort = string.Empty;
+		private static ProxyAuthType m_patProxyAuthType = ProxyAuthType.Auto;
+		private static string m_strProxyUserName = string.Empty;
+		private static string m_strProxyPassword = string.Empty;
 
-#if !KeePassUAP
 		private static bool? m_obDefaultExpect100Continue = null;
 
 		private static bool m_bSslCertsAcceptInvalid = false;
@@ -265,7 +264,6 @@ namespace KeePassLib.Serialization
 			// get { return m_bSslCertsAcceptInvalid; }
 			set { m_bSslCertsAcceptInvalid = value; }
 		}
-#endif
 #endif
 
         // Web request methods
@@ -277,8 +275,7 @@ namespace KeePassLib.Serialization
 
         public static event EventHandler<IOAccessEventArgs> IOAccessPre;
 
-#if !KeePassLibSD
-#if !KeePassUAP
+#if !KeePassLibSD && !KeePassUAP
 		// Allow self-signed certificates, expired certificates, etc.
 		private static bool AcceptCertificate(object sender,
 			X509Certificate certificate, X509Chain chain,
@@ -286,45 +283,44 @@ namespace KeePassLib.Serialization
 		{
 			return true;
 		}
-#endif
 
-        internal static void SetProxy(ProxyServerType pst, string strAddr,
-            string strPort, ProxyAuthType pat, string strUserName,
-            string strPassword)
-        {
-            m_pstProxyType = pst;
-            m_strProxyAddr = (strAddr ?? string.Empty);
-            m_strProxyPort = (strPort ?? string.Empty);
-            m_patProxyAuthType = pat;
-            m_strProxyUserName = (strUserName ?? string.Empty);
-            m_strProxyPassword = (strPassword ?? string.Empty);
-        }
+		internal static void SetProxy(ProxyServerType pst, string strAddr,
+			string strPort, ProxyAuthType pat, string strUserName,
+			string strPassword)
+		{
+			m_pstProxyType = pst;
+			m_strProxyAddr = (strAddr ?? string.Empty);
+			m_strProxyPort = (strPort ?? string.Empty);
+			m_patProxyAuthType = pat;
+			m_strProxyUserName = (strUserName ?? string.Empty);
+			m_strProxyPassword = (strPassword ?? string.Empty);
+		}
 
-        internal static void ConfigureWebRequest(WebRequest request,
-            IOConnectionInfo ioc)
-        {
-            if (request == null) { Debug.Assert(false); return; } // No throw
+		internal static void ConfigureWebRequest(WebRequest request,
+			IOConnectionInfo ioc)
+		{
+			if (request == null) { Debug.Assert(false); return; } // No throw
 
-            IocProperties p = ((ioc != null) ? ioc.Properties : null);
-            if (p == null) { Debug.Assert(false); p = new IocProperties(); }
+			IocProperties p = ((ioc != null) ? ioc.Properties : null);
+			if (p == null) { Debug.Assert(false); p = new IocProperties(); }
 
-            IHasIocProperties ihpReq = (request as IHasIocProperties);
-            if (ihpReq != null)
-            {
-                IocProperties pEx = ihpReq.IOConnectionProperties;
-                if (pEx != null) p.CopyTo(pEx);
-                else ihpReq.IOConnectionProperties = p.CloneDeep();
-            }
+			IHasIocProperties ihpReq = (request as IHasIocProperties);
+			if (ihpReq != null)
+			{
+				IocProperties pEx = ihpReq.IOConnectionProperties;
+				if (pEx != null) p.CopyTo(pEx);
+				else ihpReq.IOConnectionProperties = p.CloneDeep();
+			}
 
-            if (IsHttpWebRequest(request))
-            {
-                // WebDAV support
+			if (IsHttpWebRequest(request))
+			{
+				// WebDAV support
 #if !KeePassUAP
 				request.PreAuthenticate = true; // Also auth GET
 #endif
-                if (string.Equals(request.Method, WebRequestMethods.Http.Post,
-                    StrUtil.CaseIgnoreCmp))
-                    request.Method = WebRequestMethods.Http.Put;
+				if (string.Equals(request.Method, WebRequestMethods.Http.Post,
+					StrUtil.CaseIgnoreCmp))
+					request.Method = WebRequestMethods.Http.Put;
 
 #if !KeePassUAP
 				HttpWebRequest hwr = (request as HttpWebRequest);
@@ -335,7 +331,7 @@ namespace KeePassLib.Serialization
 				}
 				else { Debug.Assert(false); }
 #endif
-            }
+			}
 #if !KeePassUAP
 			else if(IsFtpWebRequest(request))
 			{
@@ -359,12 +355,12 @@ namespace KeePassLib.Serialization
 			catch(Exception) { Debug.Assert(false); }
 #endif
 
-            try
-            {
-                IWebProxy prx;
-                if (GetWebProxy(out prx)) request.Proxy = prx;
-            }
-            catch (Exception) { Debug.Assert(false); }
+			try
+			{
+				IWebProxy prx;
+				if (GetWebProxy(out prx)) request.Proxy = prx;
+			}
+			catch (Exception) { Debug.Assert(false); }
 
 #if !KeePassUAP
 			long? olTimeout = p.GetLong(IocKnownProperties.Timeout);
@@ -374,10 +370,10 @@ namespace KeePassLib.Serialization
 			bool? ob = p.GetBool(IocKnownProperties.PreAuth);
 			if(ob.HasValue) request.PreAuthenticate = ob.Value;
 #endif
-        }
+		}
 
-        internal static void ConfigureWebClient(WebClient wc)
-        {
+		internal static void ConfigureWebClient(WebClient wc)
+		{
 #if !KeePassUAP
 			// Not implemented and ignored in Mono < 2.10
 			try
@@ -388,48 +384,48 @@ namespace KeePassLib.Serialization
 			catch(Exception) { Debug.Assert(false); }
 #endif
 
-            try
-            {
-                IWebProxy prx;
-                if (GetWebProxy(out prx)) wc.Proxy = prx;
-            }
-            catch (Exception) { Debug.Assert(false); }
-        }
+			try
+			{
+				IWebProxy prx;
+				if (GetWebProxy(out prx)) wc.Proxy = prx;
+			}
+			catch (Exception) { Debug.Assert(false); }
+		}
 
-        private static bool GetWebProxy(out IWebProxy prx)
-        {
-            bool b = GetWebProxyServer(out prx);
-            if (b) AssignCredentials(prx);
-            return b;
-        }
+		private static bool GetWebProxy(out IWebProxy prx)
+		{
+			bool b = GetWebProxyServer(out prx);
+			if (b) AssignCredentials(prx);
+			return b;
+		}
 
-        private static bool GetWebProxyServer(out IWebProxy prx)
-        {
-            prx = null;
+		private static bool GetWebProxyServer(out IWebProxy prx)
+		{
+			prx = null;
 
-            if (m_pstProxyType == ProxyServerType.None)
-                return true; // Use null proxy
+			if (m_pstProxyType == ProxyServerType.None)
+				return true; // Use null proxy
 
-            if (m_pstProxyType == ProxyServerType.Manual)
-            {
-                try
-                {
-                    if (m_strProxyAddr.Length == 0)
-                    {
-                        // First try default (from config), then system
-                        prx = WebRequest.DefaultWebProxy;
+			if (m_pstProxyType == ProxyServerType.Manual)
+			{
+				try
+				{
+					if (m_strProxyAddr.Length == 0)
+					{
+						// First try default (from config), then system
+						prx = WebRequest.DefaultWebProxy;
 #if !KeePassUAP
 						if(prx == null) prx = WebRequest.GetSystemWebProxy();
 #endif
-                    }
-                    else if (m_strProxyPort.Length > 0)
-                        prx = new WebProxy(m_strProxyAddr, int.Parse(m_strProxyPort));
-                    else prx = new WebProxy(m_strProxyAddr);
+					}
+					else if (m_strProxyPort.Length > 0)
+						prx = new WebProxy(m_strProxyAddr, int.Parse(m_strProxyPort));
+					else prx = new WebProxy(m_strProxyAddr);
 
-                    return (prx != null);
-                }
+					return (prx != null);
+				}
 #if KeePassUAP
-                catch (Exception) { Debug.Assert(false); }
+				catch (Exception) { Debug.Assert(false); }
 #else
 				catch(Exception ex)
 				{
@@ -440,59 +436,59 @@ namespace KeePassLib.Serialization
 				}
 #endif
 
-                return false; // Use default
-            }
+				return false; // Use default
+			}
 
-            Debug.Assert(m_pstProxyType == ProxyServerType.System);
-            try
-            {
-                // First try system, then default (from config)
+			Debug.Assert(m_pstProxyType == ProxyServerType.System);
+			try
+			{
+				// First try system, then default (from config)
 #if !KeePassUAP
 				prx = WebRequest.GetSystemWebProxy();
 #endif
-                if (prx == null) prx = WebRequest.DefaultWebProxy;
+				if (prx == null) prx = WebRequest.DefaultWebProxy;
 
-                return (prx != null);
-            }
-            catch (Exception) { Debug.Assert(false); }
+				return (prx != null);
+			}
+			catch (Exception) { Debug.Assert(false); }
 
-            return false;
-        }
+			return false;
+		}
 
-        private static void AssignCredentials(IWebProxy prx)
-        {
-            if (prx == null) return; // No assert
+		private static void AssignCredentials(IWebProxy prx)
+		{
+			if (prx == null) return; // No assert
 
-            string strUserName = m_strProxyUserName;
-            string strPassword = m_strProxyPassword;
+			string strUserName = m_strProxyUserName;
+			string strPassword = m_strProxyPassword;
 
-            ProxyAuthType pat = m_patProxyAuthType;
-            if (pat == ProxyAuthType.Auto)
-            {
-                if ((strUserName.Length > 0) || (strPassword.Length > 0))
-                    pat = ProxyAuthType.Manual;
-                else pat = ProxyAuthType.Default;
-            }
+			ProxyAuthType pat = m_patProxyAuthType;
+			if (pat == ProxyAuthType.Auto)
+			{
+				if ((strUserName.Length > 0) || (strPassword.Length > 0))
+					pat = ProxyAuthType.Manual;
+				else pat = ProxyAuthType.Default;
+			}
 
-            try
-            {
-                if (pat == ProxyAuthType.None)
-                    prx.Credentials = null;
-                else if (pat == ProxyAuthType.Default)
-                    prx.Credentials = CredentialCache.DefaultCredentials;
-                else if (pat == ProxyAuthType.Manual)
-                {
-                    if ((strUserName.Length > 0) || (strPassword.Length > 0))
-                        prx.Credentials = new NetworkCredential(
-                            strUserName, strPassword);
-                }
-                else { Debug.Assert(false); }
-            }
-            catch (Exception) { Debug.Assert(false); }
-        }
+			try
+			{
+				if (pat == ProxyAuthType.None)
+					prx.Credentials = null;
+				else if (pat == ProxyAuthType.Default)
+					prx.Credentials = CredentialCache.DefaultCredentials;
+				else if (pat == ProxyAuthType.Manual)
+				{
+					if ((strUserName.Length > 0) || (strPassword.Length > 0))
+						prx.Credentials = new NetworkCredential(
+							strUserName, strPassword);
+				}
+				else { Debug.Assert(false); }
+			}
+			catch (Exception) { Debug.Assert(false); }
+		}
 
-        private static void PrepareWebAccess(IOConnectionInfo ioc)
-        {
+		private static void PrepareWebAccess(IOConnectionInfo ioc)
+		{
 #if !KeePassUAP
 			IocProperties p = ((ioc != null) ? ioc.Properties : null);
 			if(p == null) { Debug.Assert(false); p = new IocProperties(); }
@@ -547,60 +543,60 @@ namespace KeePassLib.Serialization
 			}
 			catch(Exception) { Debug.Assert(false); }
 #endif
-        }
+		}
 
-        private static IOWebClient CreateWebClient(IOConnectionInfo ioc)
-        {
-            PrepareWebAccess(ioc);
+		private static IOWebClient CreateWebClient(IOConnectionInfo ioc)
+		{
+			PrepareWebAccess(ioc);
 
-            IOWebClient wc = new IOWebClient(ioc);
-            ConfigureWebClient(wc);
+			IOWebClient wc = new IOWebClient(ioc);
+			ConfigureWebClient(wc);
 
-            if ((ioc.UserName.Length > 0) || (ioc.Password.Length > 0))
-                wc.Credentials = new NetworkCredential(ioc.UserName, ioc.Password);
-            else if (NativeLib.IsUnix()) // Mono requires credentials
-                wc.Credentials = new NetworkCredential("anonymous", string.Empty);
+			if ((ioc.UserName.Length > 0) || (ioc.Password.Length > 0))
+				wc.Credentials = new NetworkCredential(ioc.UserName, ioc.Password);
+			else if (NativeLib.IsUnix()) // Mono requires credentials
+				wc.Credentials = new NetworkCredential("anonymous", string.Empty);
 
-            return wc;
-        }
+			return wc;
+		}
 
-        private static WebRequest CreateWebRequest(IOConnectionInfo ioc)
-        {
-            PrepareWebAccess(ioc);
+		private static WebRequest CreateWebRequest(IOConnectionInfo ioc)
+		{
+			PrepareWebAccess(ioc);
 
-            WebRequest req = WebRequest.Create(ioc.Path);
-            ConfigureWebRequest(req, ioc);
+			WebRequest req = WebRequest.Create(ioc.Path);
+			ConfigureWebRequest(req, ioc);
 
-            if ((ioc.UserName.Length > 0) || (ioc.Password.Length > 0))
-                req.Credentials = new NetworkCredential(ioc.UserName, ioc.Password);
-            else if (NativeLib.IsUnix()) // Mono requires credentials
-                req.Credentials = new NetworkCredential("anonymous", string.Empty);
+			if ((ioc.UserName.Length > 0) || (ioc.Password.Length > 0))
+				req.Credentials = new NetworkCredential(ioc.UserName, ioc.Password);
+			else if (NativeLib.IsUnix()) // Mono requires credentials
+				req.Credentials = new NetworkCredential("anonymous", string.Empty);
 
-            return req;
-        }
+			return req;
+		}
 
-        public static Stream OpenRead(IOConnectionInfo ioc)
-        {
-            RaiseIOAccessPreEvent(ioc, IOAccessType.Read);
-
-            if (StrUtil.IsDataUri(ioc.Path))
-            {
-                byte[] pbData = StrUtil.DataUriToData(ioc.Path);
-                if (pbData != null) return new MemoryStream(pbData, false);
-            }
-
-            if (ioc.IsLocalFile()) return OpenReadLocal(ioc);
-
-            return IocStream.WrapIfRequired(CreateWebClient(ioc).OpenRead(
-                new Uri(ioc.Path)));
-        }
-#else
 		public static Stream OpenRead(IOConnectionInfo ioc)
 		{
 			RaiseIOAccessPreEvent(ioc, IOAccessType.Read);
 
-			return OpenReadLocal(ioc);
+			if (StrUtil.IsDataUri(ioc.Path))
+			{
+				byte[] pbData = StrUtil.DataUriToData(ioc.Path);
+				if (pbData != null) return new MemoryStream(pbData, false);
+			}
+
+			if (ioc.IsLocalFile()) return OpenReadLocal(ioc);
+
+			return IocStream.WrapIfRequired(CreateWebClient(ioc).OpenRead(
+				new Uri(ioc.Path)));
 		}
+#else
+        public static Stream OpenRead(IOConnectionInfo ioc)
+        {
+            RaiseIOAccessPreEvent(ioc, IOAccessType.Read);
+
+            return OpenReadLocal(ioc);
+        }
 #endif
 
         private static Stream OpenReadLocal(IOConnectionInfo ioc)
@@ -609,33 +605,33 @@ namespace KeePassLib.Serialization
                 FileShare.Read);
         }
 
-#if !KeePassLibSD
-        public static Stream OpenWrite(IOConnectionInfo ioc)
-        {
-            if (ioc == null) { Debug.Assert(false); return null; }
-
-            RaiseIOAccessPreEvent(ioc, IOAccessType.Write);
-
-            if (ioc.IsLocalFile()) return OpenWriteLocal(ioc);
-
-            Uri uri = new Uri(ioc.Path);
-            Stream s;
-
-            // Mono does not set HttpWebRequest.Method to POST for writes,
-            // so one needs to set the method to PUT explicitly
-            if (NativeLib.IsUnix() && IsHttpWebRequest(uri))
-                s = CreateWebClient(ioc).OpenWrite(uri, WebRequestMethods.Http.Put);
-            else s = CreateWebClient(ioc).OpenWrite(uri);
-
-            return IocStream.WrapIfRequired(s);
-        }
-#else
+#if !KeePassLibSD && !KeePassUAP
 		public static Stream OpenWrite(IOConnectionInfo ioc)
 		{
+			if (ioc == null) { Debug.Assert(false); return null; }
+
 			RaiseIOAccessPreEvent(ioc, IOAccessType.Write);
 
-			return OpenWriteLocal(ioc);
+			if (ioc.IsLocalFile()) return OpenWriteLocal(ioc);
+
+			Uri uri = new Uri(ioc.Path);
+			Stream s;
+
+			// Mono does not set HttpWebRequest.Method to POST for writes,
+			// so one needs to set the method to PUT explicitly
+			if (NativeLib.IsUnix() && IsHttpWebRequest(uri))
+				s = CreateWebClient(ioc).OpenWrite(uri, WebRequestMethods.Http.Put);
+			else s = CreateWebClient(ioc).OpenWrite(uri);
+
+			return IocStream.WrapIfRequired(s);
 		}
+#else
+        public static Stream OpenWrite(IOConnectionInfo ioc)
+        {
+            RaiseIOAccessPreEvent(ioc, IOAccessType.Write);
+
+            return OpenWriteLocal(ioc);
+        }
 #endif
 
         private static Stream OpenWriteLocal(IOConnectionInfo ioc)
@@ -657,13 +653,13 @@ namespace KeePassLib.Serialization
 
             if (ioc.IsLocalFile()) return File.Exists(ioc.Path);
 
-#if !KeePassLibSD
-            if (ioc.Path.StartsWith("ftp://", StrUtil.CaseIgnoreCmp))
-            {
-                bool b = SendCommand(ioc, WebRequestMethods.Ftp.GetDateTimestamp);
-                if (!b && bThrowErrors) throw new InvalidOperationException();
-                return b;
-            }
+#if !KeePassLibSD && !KeePassUAP
+			if (ioc.Path.StartsWith("ftp://", StrUtil.CaseIgnoreCmp))
+			{
+				bool b = SendCommand(ioc, WebRequestMethods.Ftp.GetDateTimestamp);
+				if (!b && bThrowErrors) throw new InvalidOperationException();
+				return b;
+			}
 #endif
 
             try
@@ -694,22 +690,22 @@ namespace KeePassLib.Serialization
 
             if (ioc.IsLocalFile()) { File.Delete(ioc.Path); return; }
 
-#if !KeePassLibSD
-            WebRequest req = CreateWebRequest(ioc);
-            if (req != null)
-            {
-                if (IsHttpWebRequest(req)) req.Method = "DELETE";
-                else if (IsFtpWebRequest(req))
-                    req.Method = WebRequestMethods.Ftp.DeleteFile;
-                else if (IsFileWebRequest(req))
-                {
-                    File.Delete(UrlUtil.FileUrlToPath(ioc.Path));
-                    return;
-                }
-                else req.Method = WrmDeleteFile;
+#if !KeePassLibSD && !KeePassUAP
+			WebRequest req = CreateWebRequest(ioc);
+			if (req != null)
+			{
+				if (IsHttpWebRequest(req)) req.Method = "DELETE";
+				else if (IsFtpWebRequest(req))
+					req.Method = WebRequestMethods.Ftp.DeleteFile;
+				else if (IsFileWebRequest(req))
+				{
+					File.Delete(UrlUtil.FileUrlToPath(ioc.Path));
+					return;
+				}
+				else req.Method = WrmDeleteFile;
 
-                DisposeResponse(req.GetResponse(), true);
-            }
+				DisposeResponse(req.GetResponse(), true);
+			}
 #endif
         }
 
@@ -728,23 +724,23 @@ namespace KeePassLib.Serialization
 
             if (iocFrom.IsLocalFile()) { File.Move(iocFrom.Path, iocTo.Path); return; }
 
-#if !KeePassLibSD
-            WebRequest req = CreateWebRequest(iocFrom);
-            if (req != null)
-            {
-                if (IsHttpWebRequest(req))
-                {
+#if !KeePassLibSD && !KeePassUAP
+			WebRequest req = CreateWebRequest(iocFrom);
+			if (req != null)
+			{
+				if (IsHttpWebRequest(req))
+				{
 #if KeePassUAP
-                    throw new NotSupportedException();
+					throw new NotSupportedException();
 #else
 					req.Method = "MOVE";
 					req.Headers.Set("Destination", iocTo.Path); // Full URL supported
 #endif
-                }
-                else if (IsFtpWebRequest(req))
-                {
+				}
+				else if (IsFtpWebRequest(req))
+				{
 #if KeePassUAP
-                    throw new NotSupportedException();
+					throw new NotSupportedException();
 #else
 					req.Method = WebRequestMethods.Ftp.Rename;
 					string strTo = UrlUtil.GetFileName(iocTo.Path);
@@ -755,27 +751,27 @@ namespace KeePassLib.Serialization
 
 					((FtpWebRequest)req).RenameTo = strTo;
 #endif
-                }
-                else if (IsFileWebRequest(req))
-                {
-                    File.Move(UrlUtil.FileUrlToPath(iocFrom.Path),
-                        UrlUtil.FileUrlToPath(iocTo.Path));
-                    return;
-                }
-                else
-                {
+				}
+				else if (IsFileWebRequest(req))
+				{
+					File.Move(UrlUtil.FileUrlToPath(iocFrom.Path),
+						UrlUtil.FileUrlToPath(iocTo.Path));
+					return;
+				}
+				else
+				{
 #if KeePassUAP
-                    throw new NotSupportedException();
+					throw new NotSupportedException();
 #else
 					req.Method = WrmMoveFile;
 					req.Headers.Set(WrhMoveFileTo, iocTo.Path);
 #endif
-                }
+				}
 
 #if !KeePassUAP // Unreachable code
 				DisposeResponse(req.GetResponse(), true);
 #endif
-            }
+			}
 #endif
 
             // using(Stream sIn = IOConnection.OpenRead(iocFrom))
@@ -791,38 +787,40 @@ namespace KeePassLib.Serialization
             // DeleteFile(iocFrom);
         }
 
-#if !KeePassLibSD
-        private static bool SendCommand(IOConnectionInfo ioc, string strMethod)
-        {
-            try
-            {
-                WebRequest req = CreateWebRequest(ioc);
-                req.Method = strMethod;
-                DisposeResponse(req.GetResponse(), true);
-            }
-            catch (Exception) { return false; }
+#if !KeePassLibSD && !KeePassUAP
+		private static bool SendCommand(IOConnectionInfo ioc, string strMethod)
+		{
+			try
+			{
+				WebRequest req = CreateWebRequest(ioc);
+				req.Method = strMethod;
+				DisposeResponse(req.GetResponse(), true);
+			}
+			catch (Exception) { return false; }
 
-            return true;
-        }
+			return true;
+		}
 #endif
 
+#if !KeePassUAP
         internal static void DisposeResponse(WebResponse wr, bool bGetStream)
-        {
-            if (wr == null) return;
+		{
+			if (wr == null) return;
 
-            try
-            {
-                if (bGetStream)
-                {
-                    Stream s = wr.GetResponseStream();
-                    if (s != null) s.Close();
-                }
-            }
-            catch (Exception) { Debug.Assert(false); }
+			try
+			{
+				if (bGetStream)
+				{
+					Stream s = wr.GetResponseStream();
+					if (s != null) s.Close();
+				}
+			}
+			catch (Exception) { Debug.Assert(false); }
 
-            try { wr.Close(); }
-            catch (Exception) { Debug.Assert(false); }
-        }
+			try { wr.Close(); }
+			catch (Exception) { Debug.Assert(false); }
+		}
+#endif
 
         public static byte[] ReadFile(IOConnectionInfo ioc)
         {
@@ -877,37 +875,27 @@ namespace KeePassLib.Serialization
                 sch.Equals("https", StrUtil.CaseIgnoreCmp)); // Uri.UriSchemeHttps
         }
 
+#if !KeePassUAP
         internal static bool IsHttpWebRequest(WebRequest wr)
-        {
-            if (wr == null) { Debug.Assert(false); return false; }
+		{
+			if (wr == null) { Debug.Assert(false); return false; }
 
-#if KeePassUAP
-            return IsHttpWebRequest(wr.RequestUri);
-#else
 			return (wr is HttpWebRequest);
-#endif
-        }
+		}
 
-        internal static bool IsFtpWebRequest(WebRequest wr)
-        {
-            if (wr == null) { Debug.Assert(false); return false; }
+		internal static bool IsFtpWebRequest(WebRequest wr)
+		{
+			if (wr == null) { Debug.Assert(false); return false; }
 
-#if KeePassUAP
-            return string.Equals(wr.RequestUri.Scheme, "ftp", StrUtil.CaseIgnoreCmp);
-#else
 			return (wr is FtpWebRequest);
-#endif
-        }
+		}
 
-        private static bool IsFileWebRequest(WebRequest wr)
-        {
-            if (wr == null) { Debug.Assert(false); return false; }
+		private static bool IsFileWebRequest(WebRequest wr)
+		{
+			if (wr == null) { Debug.Assert(false); return false; }
 
-#if KeePassUAP
-            return string.Equals(wr.RequestUri.Scheme, "file", StrUtil.CaseIgnoreCmp);
-#else
 			return (wr is FileWebRequest);
+		}
 #endif
-        }
     }
 }
