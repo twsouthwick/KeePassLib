@@ -27,6 +27,8 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+#else
+using ImageProcessorCore;
 #endif
 
 namespace KeePassLib.Utility
@@ -63,12 +65,13 @@ namespace KeePassLib.Utility
         {
             if (pb == null) throw new ArgumentNullException("pb");
 
-            MemoryStream ms = new MemoryStream(pb, false);
-            try { return Image.FromStream(ms); }
-            finally { ms.Close(); }
+            using (MemoryStream ms = new MemoryStream(pb, false))
+            {
+                return new Image(ms);
+            }
         }
 #else
-		public static Image LoadImage(byte[] pb)
+        public static Image LoadImage(byte[] pb)
 		{
 			if(pb == null) throw new ArgumentNullException("pb");
 

@@ -21,14 +21,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Xml;
 
 #if !KeePassUAP
 using System.Drawing;
+#else
+using ImageProcessorCore;
 #endif
 
-using KeePassLib;
 using KeePassLib.Collections;
 using KeePassLib.Interfaces;
 using KeePassLib.Resources;
@@ -242,7 +242,11 @@ namespace KeePassLib.Serialization
                     {
                         string strColor = ReadString(xr);
                         if (!string.IsNullOrEmpty(strColor))
+#if !KeePassUAP
                             m_pwDatabase.Color = ColorTranslator.FromHtml(strColor);
+#else
+                            m_pwDatabase.Color = new Color(strColor);
+#endif
                     }
                     else if (xr.Name == ElemDbKeyChanged)
                         m_pwDatabase.MasterKeyChanged = ReadTime(xr);
@@ -414,13 +418,21 @@ namespace KeePassLib.Serialization
                     {
                         string strColor = ReadString(xr);
                         if (!string.IsNullOrEmpty(strColor))
+#if !KeePassUAP
                             m_ctxEntry.ForegroundColor = ColorTranslator.FromHtml(strColor);
+#else
+                            m_ctxEntry.ForegroundColor = new Color(strColor);
+#endif
                     }
                     else if (xr.Name == ElemBgColor)
                     {
                         string strColor = ReadString(xr);
                         if (!string.IsNullOrEmpty(strColor))
+#if !KeePassUAP
                             m_ctxEntry.BackgroundColor = ColorTranslator.FromHtml(strColor);
+#else
+                            m_ctxEntry.BackgroundColor = new Color(strColor);
+#endif
                     }
                     else if (xr.Name == ElemOverrideUrl)
                         m_ctxEntry.OverrideUrl = ReadString(xr);

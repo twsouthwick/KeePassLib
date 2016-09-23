@@ -29,6 +29,8 @@ using System.Text.RegularExpressions;
 #if !KeePassUAP
 using System.Drawing;
 using System.Security.Cryptography;
+#else
+using ImageProcessorCore;
 #endif
 
 using KeePassLib.Collections;
