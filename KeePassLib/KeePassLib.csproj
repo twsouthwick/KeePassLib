@@ -80,6 +80,7 @@
     <Compile Include="Portability\CryptographyExtensions.cs" />
     <Compile Include="Portability\EnvironmentExt.cs" />
     <Compile Include="Portability\MessageService.cs" />
+    <Compile Include="Portability\PortableExtensions.cs" />
     <Compile Include="Portability\XmlExtensions.cs" />
     <Compile Include="PwCustomIcon.cs" />
     <Compile Include="Resources\KLRes.Generated.cs" />
