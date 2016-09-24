@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NETSTANDARD1_3
+using System;
 using System.Xml;
 
 namespace KeePassLib
@@ -72,3 +73,4 @@ namespace KeePassLib
         }
     }
 }
+#endif

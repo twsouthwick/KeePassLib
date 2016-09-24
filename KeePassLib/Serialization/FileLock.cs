@@ -243,7 +243,7 @@ namespace KeePassLib.Serialization
 
                 if (bDisposing)
                 {
-#if FEATURE_THREAD_SLEEP
+#if !FEATURE_TASKS
                     Thread.Sleep(50);
 #else
                     System.Threading.Tasks.Task.Delay(50).ConfigureAwait(false).GetAwaiter().GetResult();

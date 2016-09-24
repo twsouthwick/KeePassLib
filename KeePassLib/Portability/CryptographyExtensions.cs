@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace KeePassLib
+﻿namespace System.Security.Cryptography
 {
     internal static class Crypto
     {

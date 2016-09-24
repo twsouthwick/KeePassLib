@@ -45,6 +45,7 @@ using KeePassLib.Keys;
 using KeePassLib.Resources;
 using KeePassLib.Security;
 using KeePassLib.Utility;
+using System.Security.Cryptography;
 
 namespace KeePassLib.Serialization
 {

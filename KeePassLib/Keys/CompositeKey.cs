@@ -124,8 +124,8 @@ namespace KeePassLib.Keys
                 if (pKey.GetType() == tUserKeyType)
                     return true;
 #else
-				if(tUserKeyType.IsInstanceOfType(pKey))
-					return true;
+                if (tUserKeyType.IsInstanceOfType(pKey))
+                    return true;
 #endif
             }
 
@@ -151,8 +151,8 @@ namespace KeePassLib.Keys
                 if (pKey.GetType() == tUserKeyType)
                     return pKey;
 #else
-				if(tUserKeyType.IsInstanceOfType(pKey))
-					return pKey;
+                if (tUserKeyType.IsInstanceOfType(pKey))
+                    return pKey;
 #endif
             }
 
@@ -312,19 +312,19 @@ namespace KeePassLib.Keys
                 ICryptoTransform iCrypt = aes.CreateEncryptor();
 
 #else
-            RijndaelManaged r = new RijndaelManaged();
-            if(r.BlockSize != 128) // AES block size
+            using (RijndaelManaged r = new RijndaelManaged())
             {
-                Debug.Assert(false);
-                r.BlockSize = 128;
-            }
+                if (r.BlockSize != 128) // AES block size
+                {
+                    Debug.Assert(false);
+                    r.BlockSize = 128;
+                }
 
-            r.IV = pbIV;
-            r.Mode = CipherMode.ECB;
-            r.KeySize = 256;
-            r.Key = pbKeySeed32;
-            ICryptoTransform iCrypt = r.CreateEncryptor();
-            {
+                r.IV = pbIV;
+                r.Mode = CipherMode.ECB;
+                r.KeySize = 256;
+                r.Key = pbKeySeed32;
+                ICryptoTransform iCrypt = r.CreateEncryptor();
 #endif
 
                 // !iCrypt.CanReuseTransform -- doesn't work with Mono
@@ -378,7 +378,7 @@ namespace KeePassLib.Keys
             }
 
             byte[] pbIV = new byte[16];
-			Array.Clear(pbIV, 0, pbIV.Length);
+            Array.Clear(pbIV, 0, pbIV.Length);
 
 #if KeePassUAP
             using (Aes aes = Aes.Create())
@@ -390,18 +390,19 @@ namespace KeePassLib.Keys
 
                 ICryptoTransform iCrypt = aes.CreateEncryptor();
 #else
-			RijndaelManaged r = new RijndaelManaged();
-			if(r.BlockSize != 128) // AES block size
-			{
-				Debug.Assert(false);
-				r.BlockSize = 128;
-			}
+            using (RijndaelManaged r = new RijndaelManaged())
+            {
+                if (r.BlockSize != 128) // AES block size
+                {
+                    Debug.Assert(false);
+                    r.BlockSize = 128;
+                }
 
-			r.IV = pbIV;
-			r.Mode = CipherMode.ECB;
-			r.KeySize = 256;
-			r.Key = pbKey;
-			ICryptoTransform iCrypt = r.CreateEncryptor();
+                r.IV = pbIV;
+                r.Mode = CipherMode.ECB;
+                r.KeySize = 256;
+                r.Key = pbKey;
+                ICryptoTransform iCrypt = r.CreateEncryptor();
 #endif
 
                 // !iCrypt.CanReuseTransform -- doesn't work with Mono

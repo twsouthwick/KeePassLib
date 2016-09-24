@@ -1,6 +1,6 @@
-﻿using System.Xml;
+﻿#if NETSTANDARD1_3
+
 using System;
-using System.Security.Cryptography;
 
 namespace KeePassLib
 {
@@ -12,3 +12,4 @@ namespace KeePassLib
         }
     }
 }
+#endif

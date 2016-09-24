@@ -21,6 +21,11 @@ using KeePassLib.Security;
 using KeePassLib.Utility;
 using System;
 using System.Diagnostics;
+using System.Security.Cryptography;
+
+#if (DEBUG && !KeePassLibSD)
+using System.Text;
+#endif
 
 namespace KeePassLib.Keys
 {
@@ -81,7 +86,7 @@ namespace KeePassLib.Keys
         //	m_pbKeyData = null;
         // }
 
-#if (DEBUG && !KeePassLibSD && !KeePassUAP)
+#if (DEBUG && !KeePassLibSD)
 		private static bool ValidatePassword(byte[] pb)
 		{
 			try

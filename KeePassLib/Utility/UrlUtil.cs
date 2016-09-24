@@ -313,7 +313,7 @@ namespace KeePassLib.Utility
                     return strTargetFile;
             }
 
-#if (!KeePassLibSD && !KeePassUAP)
+#if FEATURE_NATIVELIBS
 			if(NativeLib.IsUnix())
 			{
 #endif
@@ -345,7 +345,7 @@ namespace KeePassLib.Utility
             }
 
             return sbRel.ToString();
-#if (!KeePassLibSD && !KeePassUAP)
+#if  FEATURE_NATIVELIBS
 			}
 
 			try // Windows
@@ -609,7 +609,7 @@ namespace KeePassLib.Utility
 
         public static string GetTempPath()
         {
-#if KeePassUAP
+#if !FEATURE_NATIVELIBS
             string strDir = Path.GetTempPath();
 #else
 			string strDir;

@@ -20,6 +20,7 @@
 using KeePassLib.Cryptography.Cipher;
 using System;
 using System.Diagnostics;
+using System.Security.Cryptography;
 
 namespace KeePassLib.Cryptography
 {

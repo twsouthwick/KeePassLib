@@ -163,7 +163,7 @@ namespace KeePassLib.Cryptography
             pb = MemUtil.UInt32ToBytes((uint)rWeak.Next());
             ms.Write(pb, 0, pb.Length);
 
-#if !KeePassUAP
+#if FEATURE_NATIVELIBS
             pb = MemUtil.UInt32ToBytes((uint)NativeLib.GetPlatformID());
             ms.Write(pb, 0, pb.Length);
 #endif
@@ -174,7 +174,7 @@ namespace KeePassLib.Cryptography
                 ms.Write(pb, 0, pb.Length);
 
 #if !KeePassUAP
-                Version v = EnvironmentExt.OSVersion.Version;
+                Version v = Environment.OSVersion.Version;
                 pb = MemUtil.UInt32ToBytes((uint)v.GetHashCode());
                 ms.Write(pb, 0, pb.Length);
 
@@ -226,7 +226,9 @@ namespace KeePassLib.Cryptography
 				// pb = MemUtil.UInt32ToBytes((uint)p.SessionId);
 				// ms.Write(pb, 0, pb.Length);
 			}
-			catch(Exception) { Debug.Assert(NativeLib.IsUnix()); }
+#if FEATURE_NATIVELIBS
+            catch(Exception) { Debug.Assert(NativeLib.IsUnix()); }
+#endif
 			finally
 			{
 				try { if(p != null) p.Dispose(); }

@@ -77,7 +77,7 @@ namespace KeePassLib.Cryptography
             m_bWriting = bWriting;
 
 #if !KeePassLibSD && !KeePassUAP
-			m_hash = (hashAlgorithm ?? new SHA256Managed());
+			m_hash = new SHA256Managed();
 #elif KeePassUAP
             m_hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
 #else // KeePassLibSD

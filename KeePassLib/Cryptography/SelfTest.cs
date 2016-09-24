@@ -17,20 +17,15 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#if !PORTABLE
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Security;
 using System.Text;
-
-#if KeePassUAP
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Parameters;
-#else
 using System.Security.Cryptography;
-#endif
 
 using KeePassLib.Cryptography.Cipher;
 using KeePassLib.Keys;
@@ -565,3 +560,4 @@ namespace KeePassLib.Cryptography
         }
     }
 }
+#endif

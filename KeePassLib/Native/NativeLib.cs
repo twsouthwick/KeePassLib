@@ -365,7 +365,7 @@ namespace KeePassLib.Native
         public static bool TransformKey256(byte[] pBuf256, byte[] pKey256,
             ulong uRounds)
         {
-#if KeePassUAP
+#if !FEATURE_NATIVELIBS
             return false;
 #else
 			if(!m_bAllowNative) return false;
@@ -396,7 +396,7 @@ namespace KeePassLib.Native
         {
             puRounds = 0;
 
-#if KeePassUAP
+#if !FEATURE_NATIVELIBS
             return false;
 #else
 			if(!m_bAllowNative) return false;

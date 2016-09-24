@@ -23,11 +23,7 @@ using System.IO;
 using System.Security;
 using System.Text;
 using System.Xml;
-
-#if !KeePassUAP
 using System.Security.Cryptography;
-#endif
-
 using KeePassLib.Cryptography;
 using KeePassLib.Resources;
 using KeePassLib.Security;

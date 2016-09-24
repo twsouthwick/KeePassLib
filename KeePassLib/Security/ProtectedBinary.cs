@@ -22,6 +22,7 @@ using KeePassLib.Cryptography.Cipher;
 using KeePassLib.Utility;
 using System;
 using System.Diagnostics;
+using System.Security.Cryptography;
 using System.Threading;
 
 #if KeePassLibSD
@@ -75,14 +76,14 @@ namespace KeePassLib.Security
         }
 
         // ProtectedMemory is supported only on Windows 2000 SP3 and higher
-#if !KeePassLibSD && !KeePassUAP
+#if FEATURE_NATIVELIBS
 		private static bool? g_obProtectedMemorySupported = null;
 #endif
         private static bool ProtectedMemorySupported
         {
             get
             {
-#if KeePassLibSD || KeePassUAP
+#if !FEATURE_NATIVELIBS
                 return false;
 #else
 				bool? ob = g_obProtectedMemorySupported;

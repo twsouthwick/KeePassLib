@@ -102,11 +102,12 @@ namespace KeePassLib.Serialization
 #if KeePassUAP
             xrs.DtdProcessing = DtdProcessing.Prohibit;
 #else
-#if !KeePassLibSD
-			xrs.ProhibitDtd = true; // Obsolete in .NET 4, but still there
-			// xrs.DtdProcessing = DtdProcessing.Prohibit; // .NET 4 only
-#endif
 			xrs.ValidationType = ValidationType.None;
+#if NET20 || NET35
+			xrs.ProhibitDtd = true;
+#else
+			xrs.DtdProcessing = DtdProcessing.Prohibit;
+#endif
 #endif
 
             return xrs;
