@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
-using System.Threading.Tasks;
-using KeePassLib.Serialization;
-using KeePassLib;
+﻿using KeePassLib;
 using KeePassLib.Keys;
+using KeePassLib.Serialization;
 using System.IO;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace KeePassLibTest
@@ -41,7 +37,7 @@ namespace KeePassLibTest
             if (hasKey)
             {
                 var keyPath = $"{Path.GetFileNameWithoutExtension(path)}.key";
-                key.AddUserKey(new KcpKeyFile(GetFullPath(keyPath)));
+                key.AddUserKey(new KcpKeyFile(File.ReadAllBytes(GetFullPath(keyPath))));
             }
 
             var db = new PwDatabase

@@ -58,6 +58,11 @@ namespace KeePassLib.Keys
             get { return m_pbKeyData; }
         }
 
+        public KcpKeyFile(byte[] data, bool bThrowIfDbFile = false)
+        {
+            Construct(data, bThrowIfDbFile);
+        }
+
         public KcpKeyFile(string strKeyFile)
         {
             Construct(IOConnectionInfo.FromPath(strKeyFile), false);
@@ -80,7 +85,12 @@ namespace KeePassLib.Keys
 
         private void Construct(IOConnectionInfo iocFile, bool bThrowIfDbFile)
         {
-            byte[] pbFileData = IOConnection.ReadFile(iocFile);
+            m_strPath = iocFile.Path;
+            Construct(IOConnection.ReadFile(iocFile), bThrowIfDbFile);
+        }
+
+        private void Construct(byte[] pbFileData, bool bThrowIfDbFile)
+        {
             if (pbFileData == null) throw new FileNotFoundException();
 
             if (bThrowIfDbFile && (pbFileData.Length >= 8))
@@ -106,7 +116,6 @@ namespace KeePassLib.Keys
 
             if (pbKey == null) throw new InvalidOperationException();
 
-            m_strPath = iocFile.Path;
             m_pbKeyData = new ProtectedBinary(true, pbKey);
 
             MemUtil.ZeroByteArray(pbKey);
