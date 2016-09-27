@@ -17,19 +17,15 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#if FEATURE_WINFORMS
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-
-#if !KeePassUAP
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-#else
-using ImageProcessorCore;
-#endif
 
 namespace KeePassLib.Utility
 {
@@ -65,10 +61,7 @@ namespace KeePassLib.Utility
         {
             if (pb == null) throw new ArgumentNullException("pb");
 
-            using (MemoryStream ms = new MemoryStream(pb, false))
-            {
-                return new Image(ms);
-            }
+            return new Image(pb);
         }
 #else
         public static Image LoadImage(byte[] pb)
@@ -430,3 +423,4 @@ namespace KeePassLib.Utility
 #endif // KeePassUAP
     }
 }
+#endif

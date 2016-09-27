@@ -21,10 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-#if !KeePassUAP
+#if FEATURE_WINFORMS
 using System.Drawing;
-#else
-using ImageProcessorCore;
 #endif
 
 using KeePassLib.Utility;
@@ -39,8 +37,10 @@ namespace KeePassLib
         private PwUuid m_pwUuid;
         private byte[] m_pbImageDataPng;
 
+#if FEATURE_WINFORMS
         private Image m_imgOrg = null;
         private Dictionary<long, Image> m_dImageCache = new Dictionary<long, Image>();
+#endif
 
         // Recommended maximum sizes, not obligatory
         internal const int MaxWidth = 128;
@@ -51,20 +51,28 @@ namespace KeePassLib
             get { return m_pwUuid; }
         }
 
+#if NETSTANDARD13
+        public byte[] Image => m_pbImageDataPng;
+
+        internal byte[] ImageDataPng
+#else
         public byte[] ImageDataPng
+#endif
         {
             get { return m_pbImageDataPng; }
         }
 
+#if FEATURE_WINFORMS
         [Obsolete("Use GetImage instead.")]
         public Image Image
         {
-#if (!KeePassLibSD && !KeePassUAP)
+#if !KeePassLibSD
 			get { return GetImage(16, 16); } // Backward compatibility
 #else
             get { return GetImage(); } // Backward compatibility
 #endif
         }
+#endif
 
         public PwCustomIcon(PwUuid pwUuid, byte[] pbImageDataPng)
         {
@@ -78,6 +86,7 @@ namespace KeePassLib
             m_pwUuid = pwUuid;
             m_pbImageDataPng = pbImageDataPng;
 
+#if FEATURE_WINFORMS
             // MemoryStream ms = new MemoryStream(m_pbImageDataPng, false);
             // m_imgOrg = Image.FromStream(ms);
             // ms.Close();
@@ -100,6 +109,7 @@ namespace KeePassLib
         public Image GetImage()
         {
             return m_imgOrg;
+#endif
         }
 
 #if (!KeePassLibSD && !KeePassUAP)

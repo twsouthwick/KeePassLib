@@ -22,10 +22,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-#if !KeePassUAP
+#if FEATURE_WINFORMS
 using System.Drawing;
-#else
-using ImageProcessorCore;
 #endif
 
 using KeePassLib.Collections;
@@ -77,7 +75,7 @@ namespace KeePassLib
 #if !KeePassUAP
         private Color m_clr = Color.Empty;
 #else
-        private Color m_clr = Color.White;
+        //private Color m_clr = Color.White;
 #endif
 
         private DateTime m_dtKeyLastChanged = PwDefs.DtDefaultNow;
@@ -242,11 +240,13 @@ namespace KeePassLib
             set { m_uMntncHistoryDays = value; }
         }
 
+#if FEATURE_WINFORMS
         public Color Color
         {
             get { return m_clr; }
             set { m_clr = value; }
         }
+#endif
 
         public DateTime MasterKeyChanged
         {
@@ -508,10 +508,8 @@ namespace KeePassLib
             m_strDefaultUserName = string.Empty;
             m_dtDefaultUserChanged = dtNow;
             m_uMntncHistoryDays = 365;
-#if !KeePassUAP
+#if FEATURE_WINFORMS
             m_clr = Color.Empty;
-#else
-            m_clr = Color.White;
 #endif
 
             m_dtKeyLastChanged = dtNow;
@@ -1424,7 +1422,9 @@ namespace KeePassLib
                 m_dtDefaultUserChanged = pdSource.m_dtDefaultUserChanged;
             }
 
+#if FEATURE_WINFORMS
             if (bForce) m_clr = pdSource.m_clr;
+#endif
 
             PwUuid pwPrefBin = m_pwRecycleBin, pwAltBin = pdSource.m_pwRecycleBin;
             if (bForce || (pdSource.m_dtRecycleBinChanged > m_dtRecycleBinChanged))
@@ -1572,7 +1572,7 @@ namespace KeePassLib
             return -1;
         }
 
-#if KeePassUAP
+#if FEATURE_WINFORMS
         public Image GetCustomIcon(PwUuid pwIconId)
         {
             int nIndex = GetCustomIconIndex(pwIconId);
@@ -1582,35 +1582,15 @@ namespace KeePassLib
 
             return null;
         }
-#elif !KeePassLibSD
-		[Obsolete("Additionally specify the size.")]
-		public Image GetCustomIcon(PwUuid pwIconId)
-		{
-			return GetCustomIcon(pwIconId, 16, 16); // Backward compatibility
-		}
+#else
+        public byte[] GetCustomIcon(PwUuid pwIconId)
+        {
+            int nIndex = GetCustomIconIndex(pwIconId);
+            if (nIndex >= 0)
+                return m_vCustomIcons[nIndex].ImageDataPng;
 
-		/// <summary>
-		/// Get a custom icon. This method can return <c>null</c>,
-		/// e.g. if no cached image of the icon is available.
-		/// </summary>
-		/// <param name="pwIconId">ID of the icon.</param>
-		/// <param name="w">Width of the returned image. If this is
-		/// negative, the image is returned in its original size.</param>
-		/// <param name="h">Height of the returned image. If this is
-		/// negative, the image is returned in its original size.</param>
-		public Image GetCustomIcon(PwUuid pwIconId, int w, int h)
-		{
-			int nIndex = GetCustomIconIndex(pwIconId);
-			if(nIndex >= 0)
-			{
-				if((w >= 0) && (h >= 0))
-					return m_vCustomIcons[nIndex].GetImage(w, h);
-				else return m_vCustomIcons[nIndex].GetImage(); // No assert
-			}
-			else { Debug.Assert(false); }
-
-			return null;
-		}
+            return null;
+        }
 #endif
 
         public bool DeleteCustomIcons(List<PwUuid> vUuidsToDelete)

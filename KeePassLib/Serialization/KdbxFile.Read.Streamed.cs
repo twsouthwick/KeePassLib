@@ -23,10 +23,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Xml;
 
-#if !KeePassUAP
+#if FEATURE_WINFORMS
 using System.Drawing;
-#else
-using ImageProcessorCore;
 #endif
 
 using KeePassLib.Collections;
@@ -239,16 +237,14 @@ namespace KeePassLib.Serialization
                         m_pwDatabase.DefaultUserNameChanged = ReadTime(xr);
                     else if (xr.Name == ElemDbMntncHistoryDays)
                         m_pwDatabase.MaintenanceHistoryDays = ReadUInt(xr, 365);
+#if FEATURE_WINFORMS
                     else if (xr.Name == ElemDbColor)
                     {
                         string strColor = ReadString(xr);
                         if (!string.IsNullOrEmpty(strColor))
-#if !KeePassUAP
                             m_pwDatabase.Color = ColorTranslator.FromHtml(strColor);
-#else
-                            m_pwDatabase.Color = new Color(strColor);
-#endif
                     }
+#endif
                     else if (xr.Name == ElemDbKeyChanged)
                         m_pwDatabase.MasterKeyChanged = ReadTime(xr);
                     else if (xr.Name == ElemDbKeyChangeRec)
@@ -415,26 +411,20 @@ namespace KeePassLib.Serialization
                         m_ctxEntry.IconId = (PwIcon)ReadInt(xr, (int)PwIcon.Key);
                     else if (xr.Name == ElemCustomIconID)
                         m_ctxEntry.CustomIconUuid = ReadUuid(xr);
+#if FEATURE_WINFORMS
                     else if (xr.Name == ElemFgColor)
                     {
                         string strColor = ReadString(xr);
                         if (!string.IsNullOrEmpty(strColor))
-#if !KeePassUAP
                             m_ctxEntry.ForegroundColor = ColorTranslator.FromHtml(strColor);
-#else
-                            m_ctxEntry.ForegroundColor = new Color(strColor);
-#endif
                     }
                     else if (xr.Name == ElemBgColor)
                     {
                         string strColor = ReadString(xr);
                         if (!string.IsNullOrEmpty(strColor))
-#if !KeePassUAP
                             m_ctxEntry.BackgroundColor = ColorTranslator.FromHtml(strColor);
-#else
-                            m_ctxEntry.BackgroundColor = new Color(strColor);
-#endif
                     }
+#endif
                     else if (xr.Name == ElemOverrideUrl)
                         m_ctxEntry.OverrideUrl = ReadString(xr);
                     else if (xr.Name == ElemTags)

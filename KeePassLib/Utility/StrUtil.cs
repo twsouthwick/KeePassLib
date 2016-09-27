@@ -26,11 +26,9 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
-#if !KeePassUAP
+#if FEATURE_WINFORMS
 using System.Drawing;
 using System.Security.Cryptography;
-#else
-using ImageProcessorCore;
 #endif
 
 using KeePassLib.Collections;
@@ -424,28 +422,29 @@ namespace KeePassLib.Utility
         //	if(m_bRtl) sb.Append("\\rtlpar\\qr\\rtlch ");
         // }
 
-        // /// <summary>
-        // /// Convert a simple HTML string to an RTF string.
-        // /// </summary>
-        // /// <param name="strHtmlString">Input HTML string.</param>
-        // /// <returns>RTF string representing the HTML input string.</returns>
-        // public static string SimpleHtmlToRtf(string strHtmlString)
-        // {
-        //	StringBuilder sb = new StringBuilder();
-        //	StrUtil.InitRtf(sb, "Microsoft Sans Serif", 8.25f);
-        //	sb.Append(" ");
-        //	string str = MakeRtfString(strHtmlString);
-        //	str = str.Replace("<b>", "\\b ");
-        //	str = str.Replace("</b>", "\\b0 ");
-        //	str = str.Replace("<i>", "\\i ");
-        //	str = str.Replace("</i>", "\\i0 ");
-        //	str = str.Replace("<u>", "\\ul ");
-        //	str = str.Replace("</u>", "\\ul0 ");
-        //	str = str.Replace("<br />", StrUtil.RtfPar);
-        //	sb.Append(str);
-        //	return sb.ToString();
-        // }
+// /// <summary>
+// /// Convert a simple HTML string to an RTF string.
+// /// </summary>
+// /// <param name="strHtmlString">Input HTML string.</param>
+// /// <returns>RTF string representing the HTML input string.</returns>
+// public static string SimpleHtmlToRtf(string strHtmlString)
+// {
+//	StringBuilder sb = new StringBuilder();
+//	StrUtil.InitRtf(sb, "Microsoft Sans Serif", 8.25f);
+//	sb.Append(" ");
+//	string str = MakeRtfString(strHtmlString);
+//	str = str.Replace("<b>", "\\b ");
+//	str = str.Replace("</b>", "\\b0 ");
+//	str = str.Replace("<i>", "\\i ");
+//	str = str.Replace("</i>", "\\i0 ");
+//	str = str.Replace("<u>", "\\ul ");
+//	str = str.Replace("</u>", "\\ul0 ");
+//	str = str.Replace("<br />", StrUtil.RtfPar);
+//	sb.Append(str);
+//	return sb.ToString();
+// }
 
+#if FEATURE_WINFORMS
         /// <summary>
         /// Convert a <c>Color</c> to a HTML color identifier string.
         /// </summary>
@@ -480,6 +479,7 @@ namespace KeePassLib.Utility
 
             return sb.ToString();
         }
+#endif
 
         /// <summary>
         /// Format an exception and convert it to a string.

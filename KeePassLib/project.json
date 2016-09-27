@@ -4,7 +4,8 @@
     "net20": {
       "buildOptions": {
         "define": [
-          "FEATURE_MESSAGESERVICE"
+          "FEATURE_MESSAGESERVICE",
+          "FEATURE_WINFORMS"
         ]
       },
       "frameworkAssemblies": {
@@ -17,7 +18,8 @@
     "net35": {
       "buildOptions": {
         "define": [
-          "FEATURE_MESSAGESERVICE"
+          "FEATURE_MESSAGESERVICE",
+          "FEATURE_WINFORMS"
         ]
       },
       "frameworkAssemblies": {
@@ -30,7 +32,8 @@
     "net40": {
       "buildOptions": {
         "define": [
-          "FEATURE_MESSAGESERVICE"
+          "FEATURE_MESSAGESERVICE",
+          "FEATURE_WINFORMS"
         ]
       },
       "frameworkAssemblies": {
@@ -43,7 +46,8 @@
     "net45": {
       "buildOptions": {
         "define": [
-          "FEATURE_MESSAGESERVICE"
+          "FEATURE_MESSAGESERVICE",
+          "FEATURE_WINFORMS"
         ]
       },
       "frameworkAssemblies": {
@@ -62,7 +66,6 @@
         ]
       },
       "dependencies": {
-        "ImageProcessorCore": "1.0.0-alpha1050",
         "NETStandard.Library": "1.6.0",
         "System.Xml.XmlSerializer": "4.0.11",
         "System.Xml.XmlDocument": "4.0.1",

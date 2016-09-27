@@ -21,10 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-#if !KeePassUAP
+#if FEATURE_WINFORMS
 using System.Drawing;
-#else
-using ImageProcessorCore;
 #endif
 
 using KeePassLib.Collections;
@@ -53,12 +51,9 @@ namespace KeePassLib
         private PwIcon m_pwIcon = PwIcon.Key;
         private PwUuid m_pwCustomIconID = PwUuid.Zero;
 
-#if !KeePassUAP
+#if FEATURE_WINFORMS
         private Color m_clrForeground = Color.Empty;
 		private Color m_clrBackground = Color.Empty;
-#else
-        private Color m_clrForeground = Color.White;
-        private Color m_clrBackground = Color.White;
 #endif
 
         private DateTime m_tCreation = PwDefs.DtDefaultNow;
@@ -181,6 +176,7 @@ namespace KeePassLib
             }
         }
 
+#if FEATURE_WINFORMS
         /// <summary>
         /// Get or set the foreground color of this entry.
         /// </summary>
@@ -198,6 +194,7 @@ namespace KeePassLib
             get { return m_clrBackground; }
             set { m_clrBackground = value; }
         }
+#endif
 
         /// <summary>
         /// The date/time when this entry was created.
@@ -359,8 +356,10 @@ namespace KeePassLib
             peNew.m_pwIcon = m_pwIcon;
             peNew.m_pwCustomIconID = m_pwCustomIconID;
 
+#if FEATURE_WINFORMS
             peNew.m_clrForeground = m_clrForeground;
             peNew.m_clrBackground = m_clrBackground;
+#endif
 
             peNew.m_tCreation = m_tCreation;
             peNew.m_tLastMod = m_tLastMod;
@@ -475,8 +474,10 @@ namespace KeePassLib
             if (m_pwIcon != pe.m_pwIcon) return false;
             if (!m_pwCustomIconID.Equals(pe.m_pwCustomIconID)) return false;
 
+#if FEATURE_WINFORMS
             if (m_clrForeground != pe.m_clrForeground) return false;
             if (m_clrBackground != pe.m_clrBackground) return false;
+#endif
 
             if (m_tCreation != pe.m_tCreation) return false;
             if (!bIgnoreLastMod && (m_tLastMod != pe.m_tLastMod)) return false;
@@ -530,8 +531,10 @@ namespace KeePassLib
             m_pwIcon = peTemplate.m_pwIcon;
             m_pwCustomIconID = peTemplate.m_pwCustomIconID; // Immutable
 
+#if FEATURE_WINFORMS
             m_clrForeground = peTemplate.m_clrForeground;
             m_clrBackground = peTemplate.m_clrBackground;
+#endif
 
             m_tCreation = peTemplate.m_tCreation;
             m_tLastMod = peTemplate.m_tLastMod;
