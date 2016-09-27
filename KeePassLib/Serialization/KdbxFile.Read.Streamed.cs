@@ -237,14 +237,12 @@ namespace KeePassLib.Serialization
                         m_pwDatabase.DefaultUserNameChanged = ReadTime(xr);
                     else if (xr.Name == ElemDbMntncHistoryDays)
                         m_pwDatabase.MaintenanceHistoryDays = ReadUInt(xr, 365);
-#if FEATURE_WINFORMS
                     else if (xr.Name == ElemDbColor)
                     {
                         string strColor = ReadString(xr);
                         if (!string.IsNullOrEmpty(strColor))
                             m_pwDatabase.Color = ColorTranslator.FromHtml(strColor);
                     }
-#endif
                     else if (xr.Name == ElemDbKeyChanged)
                         m_pwDatabase.MasterKeyChanged = ReadTime(xr);
                     else if (xr.Name == ElemDbKeyChangeRec)
@@ -411,7 +409,6 @@ namespace KeePassLib.Serialization
                         m_ctxEntry.IconId = (PwIcon)ReadInt(xr, (int)PwIcon.Key);
                     else if (xr.Name == ElemCustomIconID)
                         m_ctxEntry.CustomIconUuid = ReadUuid(xr);
-#if FEATURE_WINFORMS
                     else if (xr.Name == ElemFgColor)
                     {
                         string strColor = ReadString(xr);
@@ -424,7 +421,6 @@ namespace KeePassLib.Serialization
                         if (!string.IsNullOrEmpty(strColor))
                             m_ctxEntry.BackgroundColor = ColorTranslator.FromHtml(strColor);
                     }
-#endif
                     else if (xr.Name == ElemOverrideUrl)
                         m_ctxEntry.OverrideUrl = ReadString(xr);
                     else if (xr.Name == ElemTags)

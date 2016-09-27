@@ -71,12 +71,7 @@ namespace KeePassLib
         private string m_strDefaultUserName = string.Empty;
         private DateTime m_dtDefaultUserChanged = PwDefs.DtDefaultNow;
         private uint m_uMntncHistoryDays = 365;
-
-#if !KeePassUAP
         private Color m_clr = Color.Empty;
-#else
-        //private Color m_clr = Color.White;
-#endif
 
         private DateTime m_dtKeyLastChanged = PwDefs.DtDefaultNow;
         private long m_lKeyChangeRecDays = -1;
@@ -240,13 +235,11 @@ namespace KeePassLib
             set { m_uMntncHistoryDays = value; }
         }
 
-#if FEATURE_WINFORMS
         public Color Color
         {
             get { return m_clr; }
             set { m_clr = value; }
         }
-#endif
 
         public DateTime MasterKeyChanged
         {
@@ -508,9 +501,7 @@ namespace KeePassLib
             m_strDefaultUserName = string.Empty;
             m_dtDefaultUserChanged = dtNow;
             m_uMntncHistoryDays = 365;
-#if FEATURE_WINFORMS
             m_clr = Color.Empty;
-#endif
 
             m_dtKeyLastChanged = dtNow;
             m_lKeyChangeRecDays = -1;
@@ -1422,9 +1413,7 @@ namespace KeePassLib
                 m_dtDefaultUserChanged = pdSource.m_dtDefaultUserChanged;
             }
 
-#if FEATURE_WINFORMS
             if (bForce) m_clr = pdSource.m_clr;
-#endif
 
             PwUuid pwPrefBin = m_pwRecycleBin, pwAltBin = pdSource.m_pwRecycleBin;
             if (bForce || (pdSource.m_dtRecycleBinChanged > m_dtRecycleBinChanged))
@@ -1571,7 +1560,7 @@ namespace KeePassLib
 
             return -1;
         }
-
+        
 #if FEATURE_WINFORMS
         public Image GetCustomIcon(PwUuid pwIconId)
         {
