@@ -1,10 +1,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "KeePassLib", "KeePassLib\KeePassLib.xproj", "{A792FB54-3C31-4F55-A603-60BF9223A4D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeePassLib", "KeePassLib\KeePassLib.csproj", "{A792FB54-3C31-4F55-A603-60BF9223A4D8}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "KeePassLibTest", "KeePassLibTest\KeePassLibTest.xproj", "{8ECFD8A0-A09D-4697-9F58-98F64B3005E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KeePassLibTest", "KeePassLibTest\KeePassLibTest.csproj", "{8ECFD8A0-A09D-4697-9F58-98F64B3005E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,5 +23,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C2E20DC6-18C2-4ED2-803D-6BFDA4178F36}
 	EndGlobalSection
 EndGlobal
